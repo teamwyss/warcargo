@@ -31,6 +31,9 @@ var wc = {
 	window: {
 		w: window.innerWidth - 2, 
 		h: window.innerHeight - 4
+	},
+	player: {
+		speedXY: 300
 	}
 };
 
@@ -65,14 +68,14 @@ function create() {
 
 	game.stage.backgroundColor = '#3D5942';
 
-	bg = game.add.tileSprite(0, 0, wc.window.w + 200, wc.window.h + 100, 'background');
+	bg = game.add.tileSprite(0, 0, (wc.window.w * 2) + 300, (wc.window.h * 2) + 200, 'background');
 	bg.fixedToCamera = false;
 
 	map = game.add.tilemap('level1');
 
 	map.addTilesetImage('tiles-1');
 
-	map.setCollisionByExclusion([ 7, 15]);
+	map.setCollisionByExclusion([ 7, 16]);
 
 	layer = map.createLayer('Tile Layer 1');
 
@@ -113,20 +116,20 @@ function update() {
 	player.body.velocity.y = 0;
 
 	if (cursors.up.isDown) {
-		player.body.velocity.y = -150;
+		player.body.velocity.y = -wc.player.speedXY;
 	} else if (cursors.down.isDown) {
-		player.body.velocity.y = 150;
+		player.body.velocity.y = wc.player.speedXY;
 	}
 
 	if (cursors.left.isDown) {
-		player.body.velocity.x = -150;
+		player.body.velocity.x = -wc.player.speedXY;
 
 		//if (facing != 'left') {
 		//	player.animations.play('left');
 		//	facing = 'left';
 		//}
 	} else if (cursors.right.isDown) {
-		player.body.velocity.x = 150;
+		player.body.velocity.x = wc.player.speedXY;
 
 		//if (facing != 'right') {
 		//	player.animations.play('right');
