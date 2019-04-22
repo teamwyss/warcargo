@@ -44,7 +44,7 @@ function preload() {
 	game.load.tilemap('level1', '../data/level1.json', null, Phaser.Tilemap.TILED_JSON);
 	game.load.image('tiles-1', '../img/tiles-1.png');
 	//game.load.spritesheet('dude', '../img/dude.png', 32, 48);
-	game.load.spritesheet('dude', '../img/dude.png');
+	game.load.spritesheet('dude', '../img/dude.png', 80, 80);
 	game.load.spritesheet('droid', '../img/droid.png', 32, 32);
 	game.load.image('starSmall', '../img/star.png');
 	game.load.image('starBig', '../img/star2.png');
@@ -96,6 +96,7 @@ function create() {
 	//player.body.setSize(20, 32, 5, 16);
 	player.body.setSize(80, 80, 0, 0);
 
+	player.animations.add('act', [0, 1, 2, 3], 10, true);
 	//player.animations.add('left', [0, 1, 2, 3], 10, true);
 	//player.animations.add('turn', [4], 20, true);
 	//player.animations.add('right', [5, 6, 7, 8], 10, true);
@@ -148,12 +149,12 @@ function update() {
 			//facing = 'idle';
 		//}
 	}
-	
-	if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer) {
-		player.body.velocity.y = -250;
-		jumpTimer = game.time.now + 750;
+	if (jumpButton.isDown) {
+		player.animations.play('act');
+	} else {
+		player.animations.stop();
+		player.frame = 0;
 	}
-
 }
 
 function render () {
