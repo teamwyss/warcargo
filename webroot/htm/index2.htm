@@ -27,20 +27,13 @@ body {
 var IDE_HOOK = false;
 var VERSION = '0.0.2';
 
-var wc = {
-	window: {
-		w: window.innerWidth - 2, 
-		h: window.innerHeight - 4
-	}
-};
-
-var game = new Phaser.Game(wc.window.w, wc.window.h, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
 
-	game.load.tilemap('level1', '../data/level1.json', null, Phaser.Tilemap.TILED_JSON);
-	game.load.image('tiles-1', '../img/tiles-1.png');
-	//game.load.spritesheet('dude', '../img/dude.png', 32, 48);
+	//game.load.tilemap('level1', '../data/level1.json', null, Phaser.Tilemap.TILED_JSON);
+	//game.load.image('tiles-1', '../img/tiles-1.png');
+	game.load.spritesheet('dude', '../img/dude.png', 32, 48);
 	game.load.spritesheet('dude', '../img/dude.png');
 	game.load.spritesheet('droid', '../img/droid.png', 32, 32);
 	game.load.image('starSmall', '../img/star.png');
@@ -65,21 +58,21 @@ function create() {
 
 	game.stage.backgroundColor = '#3D5942';
 
-	bg = game.add.tileSprite(0, 0, wc.window.w + 200, wc.window.h + 100, 'background');
+	bg = game.add.tileSprite(0, 0, 800, 600, 'background');
 	bg.fixedToCamera = false;
 
-	map = game.add.tilemap('level1');
+	//map = game.add.tilemap('level1');
 
-	map.addTilesetImage('tiles-1');
+	//map.addTilesetImage('tiles-1');
 
-	map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
+	//map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
 
-	layer = map.createLayer('Tile Layer 1');
+	//layer = map.createLayer('Tile Layer 1');
 
 	// Un-comment this on to see the collision tiles.
 	//layer.debug = true;
 	
-	layer.resizeWorld();
+	//layer.resizeWorld();
 
 	//game.physics.arcade.gravity.y = 250;
 
