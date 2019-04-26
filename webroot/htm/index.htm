@@ -9,6 +9,7 @@
 <script src="../js/canvas-to-blob.js" type="text/javascript"></script>
 <script src="../js/filesaver.js" type="text/javascript"></script>
 <script src="../js/embed.js" type="text/javascript"></script>
+<script src="../js/scoreboard.js" type="text/javascript"></script>
 <style>
 body {
 	margin: 0px;
@@ -49,6 +50,7 @@ function preload() {
 	game.load.image('starSmall', '../img/star.png');
 	game.load.image('starBig', '../img/star2.png');
 	game.load.image('background', '../img/background2.png');
+    game.load.image('bacon', '../img/bacon.png');
 
 }
 
@@ -56,6 +58,8 @@ var map;
 var tileset;
 var layer;
 var player;
+var food;
+//var bacon;
 //var facing = 'left';
 var jumpTimer = 0;
 var cursors;
@@ -85,6 +89,25 @@ function create() {
 	layer.resizeWorld();
 
 	//game.physics.arcade.gravity.y = 250;
+	
+	
+	
+	/*
+	Add Bacon
+	*/
+	food = game.add.group();
+	var aiPos = [
+		[game.world.centerX - 150, game.world.centerY - 50]
+		,[264, 17 * 64]
+	];
+    for (var iB = 0; iB < aiPos.length; iB++) {
+        //  This creates a new Phaser.Sprite instance within the group
+        var baconToAdd = food.create(aiPos[iB][0], aiPos[iB][1], 'bacon');
+		game.physics.enable(baconToAdd, Phaser.Physics.ARCADE);
+    }
+
+	
+	
 
 	//player = game.add.sprite(80, 80, 'dude');
 	player = game.add.sprite(game.world.centerX, game.world.centerY, 'dude');
@@ -105,10 +128,25 @@ function create() {
 
 	cursors = game.input.keyboard.createCursorKeys();
 	jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	
+		
+	scoreboard.init(this);
 
 }
 
+function collisionHandler (player, veg) {
+
+	console.log("EEEEEEEEEEEEEEEEEEEEEEEEtttt");
+	veg.kill();
+	scoreboard.updateScore();
+	scoreboard.addBacon();
+}
+
 function update() {
+	
+	/* Bacon */
+	game.physics.arcade.collide(player, food, collisionHandler);
+
 
 	game.physics.arcade.collide(player, layer);
 	player.rotation = game.physics.arcade.angleToPointer(player) + 1.57;
@@ -155,6 +193,9 @@ function update() {
 		player.animations.stop();
 		player.frame = 0;
 	}
+	
+	
+	
 }
 
 function render () {
@@ -163,6 +204,7 @@ function render () {
 	game.debug.body(player);
 	game.debug.bodyInfo(player, 16, 24);
 	*/
+	
 }
 		
 </script>
