@@ -20,6 +20,42 @@ body {
 }
 </style>
 </head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <body style="">
 <div id="phaser-example"></div>
 <script type="text/javascript">
@@ -32,6 +68,7 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 function preload() {
 
 	game.load.image('background','../img/debug-grid-1920x1920.png');
+	game.load.image('bgWater','../img/bgWater.png');
 	game.load.image('player','../img/phaser-dude.png');
 	game.load.image('tree', '../img/propTree.blob.jpg');
 
@@ -45,6 +82,7 @@ var tree;
 function create() {
 
 	game.add.tileSprite(0, 0, 1920, 1920, 'background');
+	game.add.tileSprite(500, 1920, 200, 500 'water');
 
 	game.world.setBounds(0, 0, 1920, 1920);
 
