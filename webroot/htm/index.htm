@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- saved from url=(0058)https://examples.phaser.io/embed.php?f=games/starstruck.js -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>WarCargo UPDATEME</title>
+<title>WarCargo</title>
 <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui">
 <script src="../js/jquery-2.0.3.min.js" type="text/javascript"></script>
 <script src="../js/phaser.2.6.2.min.js" type="text/javascript"></script>
@@ -44,6 +44,8 @@ var wc = {
 var game = new Phaser.Game(wc.window.w, wc.window.h, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
+	
+	document.title = "WarCargo " + VERSION;
 
 	game.load.tilemap('level1', '../data/level1.json', null, Phaser.Tilemap.TILED_JSON);
 	game.load.image('tiles-1', '../img/tiles-1.png');
