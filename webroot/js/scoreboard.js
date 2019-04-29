@@ -10,7 +10,6 @@ var scoreboard = {
 		iPosX: 45,
 		iPosY: 16,
 		iLineH: 40
-		/*var sColor = "#FFF"*/
 	},
 	oTextStyle: {
 		fontSize: '32px',
