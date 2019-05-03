@@ -1,7 +1,7 @@
 #scoreboard-frame ,
 #player-stats-frame,
 #XXXinventory-frame {
-	border: 2px dotted orange;
+	XXXborder: 2px dotted orange;
 }
 #player-stats-frame,
 #inventory-frame .slot {
@@ -29,7 +29,10 @@
 	bottom: 20px;
 	position: absolute;
 	left: 20px;
-	padding-left: 320px;
+	XXXpadding-left: 320px;
+}
+div#inventory-frame .slot:first-child {
+	margin-left: 320px;
 }
 #inventory-frame .slot {
 	width: 70px;
