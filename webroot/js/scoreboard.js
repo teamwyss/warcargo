@@ -5,6 +5,7 @@ var scoreboard = {
 	bacon: 0,
 	scoreText: null,
 	bg: null,
+	ui:null,
 	oMetrics: {
 		iMargin: 20,
 		iPosX: 45,
@@ -17,8 +18,9 @@ var scoreboard = {
 		fontWeight: 20
 	},
 	init: function(game) {
+		
+		this.ui = document.querySelector("scoreboard-frame");
 
-			
 		// DO not delete, may be useful var msgBox = game.add.group();
         //make the back of the message box
         this.bg = game.add.sprite(this.oMetrics.iMargin, this.oMetrics.iMargin, "bgScoreboard");
