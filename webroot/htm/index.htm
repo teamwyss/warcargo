@@ -24,12 +24,16 @@ body {
 </head>
 <body style="">
 <div id="scoreboard-frame">
-	<div id="player-stats-frame"></div>
+	<div id="player-stats-frame">
+		<div id="points-digit">0</div>
+		<div id="points-guage"><div id="fuel"></div></div>
+		<div id="level-digit">0</div>
+	</div>
 	<div id="inventory-frame">
-		<div id="bacon" class="slot"></div>
-		<div id="wood" class="slot"></div>
-		<div id="stone" class="slot"></div>
-		<div id="bombs" class="slot"></div>
+		<div id="bacon" class="slot"><div class="digit"></div></div>
+		<div id="wood" class="slot"><div class="digit"></div></div>
+		<div id="stone" class="slot"><div class="digit"></div></div>
+		<div id="bombs" class="slot"><div class="digit"></div></div>
 	</div>
 </div>
 <div id="phaser-example"></div>
@@ -146,7 +150,6 @@ function create() {
 	player.body.setSize(80, 80, 0, 0);
 
 	player.animations.add('act', [0, 1, 2, 3], 10, true);
-
 	game.camera.follow(player);
 
 	cursors = game.input.keyboard.createCursorKeys();
@@ -161,8 +164,8 @@ function create() {
  */
 function foodCollisionHandler (player, foodItem) {
 	foodItem.kill();
-	scoreboard.updateScore();
-	scoreboard.addBacon();
+	scoreboard.points.add(100);
+	scoreboard.bacon.add();
 }
 
 function update() {

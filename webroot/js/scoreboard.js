@@ -1,53 +1,85 @@
 
 var scoreboard = {
 		
-	score: 0,
-	bacon: 0,
-	scoreText: null,
-	bg: null,
-	ui:null,
-	oMetrics: {
-		iMargin: 20,
-		iPosX: 45,
-		iPosY: 16,
-		iLineH: 40
-	},
-	oTextStyle: {
-		fontSize: '32px',
-		fill: '#FFF',
-		fontWeight: 20
-	},
+	points: null,
+	level: null,
+	bacon: null,
+	guage: null,
+
 	init: function(game) {
 		
 		this.ui = document.querySelector("scoreboard-frame");
 
-		// DO not delete, may be useful var msgBox = game.add.group();
-        //make the back of the message box
-        this.bg = game.add.sprite(this.oMetrics.iMargin, this.oMetrics.iMargin, "bgScoreboard");
-        this.bg.alpha = 0.5;
-        this.bg.fixedToCamera = true;
-			
-		// Score
-        this.oMetrics.iPosY = this.oMetrics.iMargin + Math.round(this.oMetrics.iLineH / 2);
-		this.scoreText = game.add.text(this.oMetrics.iPosX, this.oMetrics.iPosY, 'score: 0', this.oTextStyle);
-		this.scoreText.fixedToCamera = true;
-		
-		// Bacon
-		this.oMetrics.iPosY += this.oMetrics.iLineH;
-		this.baconText = game.add.text(this.oMetrics.iPosX, this.oMetrics.iPosY, 'bacon: 0', this.oTextStyle);
-		this.baconText.fixedToCamera = true;
-
-	},
-	addBacon: function() {
-		this.bacon++;
-		this.baconText.setText("bacon: " + this.bacon);
-	},
-	updateScore: function(iScore) {
-		if (typeof iScore == "undefined") {
-			iScore = 100;
+		this.points = this.createNewStat().init("#points-digit");
+		this.points.overflow = function(){
+			scoreboard.points.reset();
+			scoreboard.level.add();
 		}
-		this.score += iScore;
-		this.scoreText.setText("score: " + this.score);
+		this.points.afterAdd = function(){
+			scoreboard.pointsGuage.refresh();
+		}
+		this.level = this.createNewStat().init("#level-digit");
+		this.bacon = this.createNewSlot().init("#inventory-frame div#bacon", "bacon.png");
+		this.pointsGuage = this.createNewGuage().init("#points-guage");
+	},
+	createNewStat: function() {
+		return {
+			count:0,
+			max:300,
+			ui:null, 
+			init: function(xpath){
+				this.ui = document.querySelector(xpath);
+				this.ui.innerHTML = this.count;
+				return this;
+			},
+			add: function(iChange){
+				this.count += (typeof iChange == "undefined") ? 1 : iChange;
+				if (this.count >= this.max) {
+					this.overflow();
+				}
+				this.ui.innerHTML = this.count;
+				this.afterAdd();
+				return this;
+			},
+			reset: function(){
+				this.count = 0;
+				this.add(0);
+			},
+			overflow: function(){},
+			afterAdd: function(){}
+		}
+	},
+	createNewGuage: function() {
+		return {
+			init: function(xpath) {
+				this.ui = document.querySelector("#fuel");
+				return this;
+			},
+			refresh: function(xpath) {
+				this.ui.innerHTML = Math.round((scoreboard.points.count * 100) / scoreboard.points.max) + "%";
+			}
+		}
+	},
+	createNewSlot: function() {
+		return {
+			count:0,
+			ui:null, 
+			digit:null,
+			imgName:null,
+			init: function(xpath, imgName){
+				this.ui = document.querySelector(xpath);
+				this.imgName = imgName
+				this.digit = this.ui.querySelector(".digit");
+				return this;
+			},
+			add: function(iChange){
+				this.count += (typeof iChange == "undefined") ? 1 : iChange;
+				if (this.count == 0) {
+					this.ui.style.backgroundImage = "url('../img/" + this.imgName + "')";
+				}
+				this.digit.innerHTML = this.count;
+				return this;
+			}
+		}
 	}
 }
-
