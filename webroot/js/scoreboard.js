@@ -19,7 +19,7 @@ var scoreboard = {
 			scoreboard.pointsGuage.refresh();
 		}
 		this.level = this.createNewStat().init("#level-digit");
-		this.bacon = this.createNewSlot().init("#inventory-frame div#bacon", "bacon.png");
+		this.bacon = this.createNewSlot().init("#inventory-frame div#bacon", "bacon");
 		this.pointsGuage = this.createNewGuage().init("#points-guage");
 	},
 	createNewStat: function() {
@@ -62,20 +62,27 @@ var scoreboard = {
 	},
 	createNewSlot: function() {
 		return {
+			id:null,
 			count:0,
 			ui:null, 
 			digit:null,
-			imgName:null,
-			init: function(xpath, imgName){
+			icon:null,
+			init: function(xpath, name){
 				this.ui = document.querySelector(xpath);
-				this.imgName = imgName
+				this.id = name
 				this.digit = this.ui.querySelector(".digit");
+				this.icon = this.ui.querySelector(".icon");
+				this.icon.style.backgroundImage = "url('../img/" + this.id + ".png')";
+				this.icon.style.opacity = "0.3";
+				
 				return this;
 			},
 			add: function(iChange){
 				this.count += (typeof iChange == "undefined") ? 1 : iChange;
-				if (this.count == 0) {
-					this.ui.style.backgroundImage = "url('../img/" + this.imgName + "')";
+				//d ebugger;
+				if (this.count > 0) {
+					this.icon.style.opacity = "1.0";
+					//this.ui.style.backgroundPosition = "10px 10px";
 				}
 				this.digit.innerHTML = this.count;
 				return this;

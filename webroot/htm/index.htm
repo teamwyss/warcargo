@@ -30,10 +30,10 @@ body {
 		<div id="level-digit">0</div>
 	</div>
 	<div id="inventory-frame">
-		<div id="bacon" class="slot"><div class="digit"></div></div>
-		<div id="wood" class="slot"><div class="digit"></div></div>
-		<div id="stone" class="slot"><div class="digit"></div></div>
-		<div id="bombs" class="slot"><div class="digit"></div></div>
+		<div id="bacon" class="slot"><div class="icon"></div><div class="digit"></div></div>
+		<div id="wood" class="slot"><div class="icon"></div><div class="digit"></div></div>
+		<div id="stone" class="slot"><div class="icon"></div><div class="digit"></div></div>
+		<div id="bombs" class="slot"><div class="icon"></div><div class="digit"></div></div>
 	</div>
 </div>
 <div id="phaser-example"></div>
@@ -147,7 +147,7 @@ function create() {
 
 	player.body.bounce.y = 0; // was 0.2
 	player.body.collideWorldBounds = true;
-	player.body.setSize(80, 80, 0, 0);
+	player.body.setSize(40, 40, 20, 20);
 
 	player.animations.add('act', [0, 1, 2, 3], 10, true);
 	game.camera.follow(player);
@@ -200,11 +200,12 @@ function update() {
 }
 
 function render () {
-	/*
-	game.debug.text(game.time.physicsElapsed, 32, 32);
-	game.debug.body(player);
-	game.debug.bodyInfo(player, 16, 24);
-	*/
+	var isDebug = false;
+	if (isDebug) {
+		game.debug.text(game.time.physicsElapsed, 32, 32);
+		game.debug.body(player);
+		game.debug.bodyInfo(player, 16, 24);
+	}
 	
 }
 		
