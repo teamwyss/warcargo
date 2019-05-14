@@ -3,6 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <title>LevelDataEditor</title>
+<style type="text/css">
+blank, pixel {
+	width: 10px;
+	height: 10px;
+	background-color: #ddeedd;
+	display: inline-block;
+}
+pixel {
+	background-image:url('../img/tiles-1.png');
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+	background-size: 90px auto;
+}
+</style>
 <script type="text/javascript" src="levelDataOld.js"></script>
 <script type="text/javascript">
 var uiEdit;
@@ -10,99 +24,50 @@ var uiDebug;
 var iWidth = 64;
 var iHeight = 64;
 
-var UNK = "?";
-var SPACE = " ";
-var BRICK = "B";
-var PLANT_SMALL = "Y";
-var PLANT_NW = "1";
-var PLANT_NE = "2";
-var PLANT_SW = "3";
-var PLANT_SE = "4";
-var TUFT = "*";
-var ROCK = "O";
-var MUD = ".";
-var WATER = "~";
-var WATER_NC = "-";
-var WATER_SE = "W";
-var WATER_SW = "K";
-var WATER_SC = "X";
-var WATER_SS = "Z";
-var gl = [
-	SPACE
-	,UNK
-	,UNK
-	,UNK
-	,BRICK
-	,PLANT_NW
-	,PLANT_NE
-	,PLANT_SMALL
-	,TUFT
-	,MUD
-	,UNK
-	,UNK
-	,UNK
-	,UNK
-	,PLANT_SW
-	,PLANT_SE
-	,UNK
-	,WATER
-	,ROCK
-	,UNK
-	,WATER_SC
-	,WATER_SS
-	,WATER_NC
-	,WATER_SS
-	,WATER_SE
-	,WATER
-	,WATER_SW
-	,WATER
-	,UNK
-	,UNK
-	,UNK
-	,UNK
-	,UNK
-	,UNK
-	,UNK
-	,UNK
-];
-var NL = "\n";
+var NL = "<br>";
 var iGL = 0;
 /*
 for (; iGL < gl.length; iGL++) {
 	if (gl[iGL] == UNK) {}
 }
 */
+var dim = {
+	cols: 9
+	,pixXY: 10
+};
+function decorateImg(iP) {
+	if (iP == 0) {
+		return "<blank></blank>";
+	}
+	//var iX = (iP % dim.cols) - 1;
+	var iX = ((iP - 1) % dim.cols);
+	var iY = Math.round((iP - iX) / dim.cols);
+	var sOut = "<pixel style=\"background-position: -" 
+		+ (iX * dim.pixXY)
+		+ "px -"
+		+ (iY * dim.pixXY)
+		+ "px;\" title=\"pos:" + iP + "\"></pixel>"
+		;
+	return sOut;
+}
 function createMapFromData() {
 	uiDebug.innerHTML = iWidth + " * " + iHeight;
 	var sOut = "";
 	var iCounterXY = 0;
 	for (var iH = 0; iH < iHeight; iH++) {
 		for (var iW = 0; iW < iWidth; iW++) {
-			var ixValAtXY = data[iCounterXY];
-			/*
-			case 0:
-				sOut += SPACE;
-				break;
-			default:
-				sOut += BRICK;
-				break;
-			}
-			*/
-			var sGL = gl[ixValAtXY];			
-			if (sGL == UNK) {
-				sOut += "<span title=\"" + ixValAtXY + "\">" + gl[ixValAtXY] + "<span>";
-			} else {
-				sOut += gl[ixValAtXY];
-			}
+			var iImgPos = data[iCounterXY];
+			sOut += decorateImg(iImgPos);
 			iCounterXY++;
 		}	
-		sOut += "|";
 		sOut += NL;
 	}	
 	uiEdit.innerHTML = sOut;
 }
 window.addEventListener('DOMContentLoaded', (event) => {
-	uiEdit = document.querySelector("pre[contenteditable=true]");
+	uiEdit = document.querySelector("div#uiEdit");
+	uiEdit.style.width = ((iWidth + 2) * dim.pixXY) + "px";
+	uiEdit.style.height = ((iWidth + 2) * dim.pixXY) + "px";
 	uiDebug = document.querySelector("div#debug");
 	createMapFromData();
 });
@@ -111,7 +76,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 </head>
 <body>
 <div id="debug"></div>
-<pre contenteditable="true" style="line-height: 60%;font-size:15pt;"></pre>
+<div id="uiEdit" style="width: 800px;line-height:10px;"></div>
 <textarea class="width: 1500px;height:200px;"></textarea>
 </body>
 </html>
