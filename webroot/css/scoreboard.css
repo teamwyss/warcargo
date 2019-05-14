@@ -30,19 +30,39 @@
 #player-stats-frame #points-digit,
 #player-stats-frame #points-guage,
 #player-stats-frame #level-digit {
-	border: 1px solid lime;
+	XXXXborder: 1px solid lime;
 	position: absolute;
 	top: 0px;
-	height: 40px;
+	XXXXXXheight: 40px;
+}
+div#points-level-frame {
+    top: 10px;
+    position: relative;
+}
+div#level-label {
+	position: absolute;
+	left: 10px;
 }
 #player-stats-frame #points-digit {
-	width: 40px;
+	width: 100%;
+	left: 0px;
+	color: white;
+	text-shadow: 1px 1px #000000;
+	text-align: center;
 }
 #player-stats-frame #points-guage {
 	width: 200px;
-	border: 1px solid yellow;
+	XXXXXborder: 1px solid yellow;
 	left: 60px;
+	background-color: #88FFAA88;
 }
+#points-guage .fuel {
+	background-color: #00000044;
+	height: 20px;
+	width: 1px;
+	transition: width .5s;
+}
+
 #player-stats-frame #level-digit {
 	width: 40px;
 	right: 0;

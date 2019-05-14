@@ -11,14 +11,31 @@ var scoreboard = {
 		this.ui = document.querySelector("scoreboard-frame");
 
 		this.points = this.createNewStat().init("#points-digit");
-		this.points.overflow = function(){
-			scoreboard.points.reset();
-			scoreboard.level.add();
-		}
 		this.points.afterAdd = function(){
 			scoreboard.pointsGuage.refresh();
+			if (scoreboard.points.count >= scoreboard.points.max) {
+				scoreboard.points.reset();
+				scoreboard.level.add();
+				setTimeout(
+					function(){
+						scoreboard.pointsGuage.refresh();
+					}
+					,600
+				);
+			}
 		}
+		
 		this.level = this.createNewStat().init("#level-digit");
+		this.level.afterAdd = function(){
+			scoreboard.level.ui.style.backgroundColor = "white";
+			setTimeout(
+				function(){
+					scoreboard.level.ui.style.backgroundColor = "transparent";
+				}
+				,200
+			);
+		}
+		
 		this.bacon = this.createNewSlot().init("#inventory-frame div#bacon", "bacon");
 		this.pointsGuage = this.createNewGuage().init("#points-guage");
 	},
@@ -35,7 +52,7 @@ var scoreboard = {
 			add: function(iChange){
 				this.count += (typeof iChange == "undefined") ? 1 : iChange;
 				if (this.count >= this.max) {
-					this.overflow();
+					this.count = this.max;
 				}
 				this.ui.innerHTML = this.count;
 				this.afterAdd();
@@ -45,18 +62,23 @@ var scoreboard = {
 				this.count = 0;
 				this.add(0);
 			},
-			overflow: function(){},
 			afterAdd: function(){}
 		}
 	},
 	createNewGuage: function() {
 		return {
+			uiFrame:null,
+			uiFuel:null,
 			init: function(xpath) {
-				this.ui = document.querySelector("#fuel");
+				this.uiFrame = document.querySelector(xpath);
+				this.uiFuel = document.querySelector(xpath + " .fuel");
 				return this;
 			},
 			refresh: function(xpath) {
-				this.ui.innerHTML = Math.round((scoreboard.points.count * 100) / scoreboard.points.max) + "%";
+				var iPc = Math.round((scoreboard.points.count * 100) / scoreboard.points.max);
+				var iPx = 2 * iPc; 
+				//this.uiFrame.innerHTML = iPx + "px == " + iPc + "%";
+				this.uiFuel.style.width = iPx + "px";
 			}
 		}
 	},
@@ -82,7 +104,6 @@ var scoreboard = {
 				//d ebugger;
 				if (this.count > 0) {
 					this.icon.style.opacity = "1.0";
-					//this.ui.style.backgroundPosition = "10px 10px";
 				}
 				this.digit.innerHTML = this.count;
 				return this;
