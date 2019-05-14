@@ -20,9 +20,12 @@ pixel {
 <script type="text/javascript" src="levelDataOld.js"></script>
 <script type="text/javascript">
 var uiEdit;
-var uiDebug;
+var uiPalette;
 var iWidth = 64;
 var iHeight = 64;
+var iTotalTiles = (iWidth * iHeight);
+
+var iInk = 4;
 
 var NL = "<br>";
 var iGL = 0;
@@ -32,51 +35,102 @@ for (; iGL < gl.length; iGL++) {
 }
 */
 var dim = {
-	cols: 9
-	,pixXY: 10
+	cols: 9 // In main sprite, how many cols.
+	,rows: 3 // How many rows.
+	,pixXY: 10 // Size of each image rendered in map.
 };
-function decorateImg(iP) {
-	if (iP == 0) {
-		return "<blank></blank>";
+function decorateImg(iCounterXY, ixInsideSprite, isPalette) {
+	var sClick = " onclick=\"swap(this, " + iCounterXY 
+		+ ");\" id=\"T" + iCounterXY + "\"";
+	if (isPalette) {
+		sClick = " onclick=\"iInk = " + iCounterXY 
+			+ ";\" id=\"P" + iCounterXY + "\"";
 	}
-	//var iX = (iP % dim.cols) - 1;
-	var iX = ((iP - 1) % dim.cols);
-	var iY = Math.round((iP - iX) / dim.cols);
-	var sOut = "<pixel style=\"background-position: -" 
-		+ (iX * dim.pixXY)
-		+ "px -"
-		+ (iY * dim.pixXY)
-		+ "px;\" title=\"pos:" + iP + "\"></pixel>"
+	if (ixInsideSprite == 0) {
+		return "<pixel" + sClick 
+			+ " style=\"background-image: none;\"></pixel>";
+	}
+	//var iX = (ixInsideSprite % dim.cols) - 1;
+	var sOut = "<pixel" + sClick 
+		+ " style=\"" + convertImgIxToCssStyle(ixInsideSprite) 
+		+ "\" title=\"pos:" + ixInsideSprite + "\"></pixel>"
 		;
 	return sOut;
 }
+function convertImgIxToCssStyle(ixInsideSprite) {
+	var iX = ((ixInsideSprite - 1) % dim.cols);
+	var iY = Math.round((ixInsideSprite - iX) / dim.cols);
+	return "background-position: -" 
+		+ (iX * dim.pixXY)
+		+ "px -"
+		+ (iY * dim.pixXY)
+		+ "px;"
+		;
+}
+function swap(tile, iTrg) {
+	data[iTrg] = iInk;
+	//createMapFromData();
+	tile.style = convertImgIxToCssStyle(iInk);
+}
+function getPaletteHtml() {
+	var sOut = "total px = " + iWidth + " * " + iHeight;
+	var iInkCurr = 1;
+	for (var iRowCurr = 0; iRowCurr < dim.rows; iRowCurr++) {
+		sOut += NL;
+		for (var iColCurr = 0; iColCurr < dim.cols; iColCurr++) {
+			sOut += decorateImg(iInkCurr, iInkCurr, true);
+			iInkCurr++;
+		}
+	}
+	return sOut;
+}
 function createMapFromData() {
-	uiDebug.innerHTML = iWidth + " * " + iHeight;
+	uiPalette.innerHTML = getPaletteHtml();
 	var sOut = "";
 	var iCounterXY = 0;
 	for (var iH = 0; iH < iHeight; iH++) {
 		for (var iW = 0; iW < iWidth; iW++) {
-			var iImgPos = data[iCounterXY];
-			sOut += decorateImg(iImgPos);
+			var ixInsideSprite = data[iCounterXY];
+			sOut += decorateImg(iCounterXY, ixInsideSprite, false);
 			iCounterXY++;
 		}	
 		sOut += NL;
 	}	
 	uiEdit.innerHTML = sOut;
 }
+function outputDataToField() {
+	var sOut = "";
+	var iCounterXY = 0;
+	for (var iH = 0; iH < iHeight; iH++) {
+		for (var iW = 0; iW < iWidth; iW++) {
+			var ixInsideSprite = data[iCounterXY];
+			if (ixInsideSprite < 10) {
+				sOut += " ";
+			}
+			sOut += ixInsideSprite;
+			if (iCounterXY < (iTotalTiles - 1)) {
+				sOut += ","
+			}
+			iCounterXY++;
+		}	
+		sOut += "\n";
+	}	
+	document.querySelector("#uiOutput").value = sOut;
+}
 window.addEventListener('DOMContentLoaded', (event) => {
 	uiEdit = document.querySelector("div#uiEdit");
 	uiEdit.style.width = ((iWidth + 2) * dim.pixXY) + "px";
 	uiEdit.style.height = ((iWidth + 2) * dim.pixXY) + "px";
-	uiDebug = document.querySelector("div#debug");
+	uiPalette = document.querySelector("div#palette");
 	createMapFromData();
 });
 
 </script>
 </head>
 <body>
-<div id="debug"></div>
+<div id="palette"></div>
 <div id="uiEdit" style="width: 800px;line-height:10px;"></div>
-<textarea class="width: 1500px;height:200px;"></textarea>
+<button onclick="outputDataToField()">output</button>
+<textarea id="uiOutput" style="width: 1500px;height:200px;font-family: monospace;"></textarea>
 </body>
 </html>
