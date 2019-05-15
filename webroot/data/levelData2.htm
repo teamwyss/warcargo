@@ -2,23 +2,37 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>LevelDataEditor</title>
+<title>Edit WarCargo</title>
 <style type="text/css">
-blank, pixel {
-	width: 10px;
-	height: 10px;
+pixel {
+	width: 32px;
+	height: 32px;
 	background-color: #ddeedd;
 	display: inline-block;
-}
-pixel {
-	background-image:url('../img/tiles-1.png');
+	background-image:url('../img/tiles-1.png?refreshNOW');
 	background-repeat: no-repeat;
 	background-position: 0px 0px;
-	background-size: 90px auto;
+	background-size: 288px auto;
+}
+pixel:hover {
+	background-color: yellow;
 }
 </style>
 <script type="text/javascript" src="levelDataOld.js"></script>
+<script type="text/javascript" src="../js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
+
+var data;
+$.getJSON('level1.json',function(jsonData){
+	console.log(jsonData);
+	//d ebugger;
+	data = jsonData.layers[0].data;
+	initPage();
+});
+
+
+
+
 var uiEdit;
 var uiPalette;
 var iWidth = 64;
@@ -37,7 +51,7 @@ for (; iGL < gl.length; iGL++) {
 var dim = {
 	cols: 9 // In main sprite, how many cols.
 	,rows: 3 // How many rows.
-	,pixXY: 10 // Size of each image rendered in map.
+	,pixXY: 32 // Size of each image rendered in map.
 };
 function decorateImg(iCounterXY, ixInsideSprite, isPalette) {
 	var sClick = " onclick=\"swap(this, " + iCounterXY 
@@ -58,8 +72,13 @@ function decorateImg(iCounterXY, ixInsideSprite, isPalette) {
 	return sOut;
 }
 function convertImgIxToCssStyle(ixInsideSprite) {
-	var iX = ((ixInsideSprite - 1) % dim.cols);
-	var iY = Math.round((ixInsideSprite - iX) / dim.cols);
+	var iX = 0;
+	var iY = (dim.rows + 1);
+	if (ixInsideSprite != 0) {
+		iX = ((ixInsideSprite - 1) % dim.cols);
+		iY = Math.round((ixInsideSprite - iX) / dim.cols);
+	}
+	
 	return "background-position: -" 
 		+ (iX * dim.pixXY)
 		+ "px -"
@@ -68,9 +87,12 @@ function convertImgIxToCssStyle(ixInsideSprite) {
 		;
 }
 function swap(tile, iTrg) {
-	data[iTrg] = iInk;
-	//createMapFromData();
-	tile.style = convertImgIxToCssStyle(iInk);
+	var iInkToSet = iInk;
+	if (data[iTrg] != 0) {
+		iInkToSet = 0;
+	}
+	data[iTrg] = iInkToSet;
+	tile.style = convertImgIxToCssStyle(iInkToSet);
 }
 function getPaletteHtml() {
 	var sOut = "total px = " + iWidth + " * " + iHeight;
@@ -117,12 +139,14 @@ function outputDataToField() {
 	}	
 	document.querySelector("#uiOutput").value = sOut;
 }
-window.addEventListener('DOMContentLoaded', (event) => {
+function initPage(){
 	uiEdit = document.querySelector("div#uiEdit");
 	uiEdit.style.width = ((iWidth + 2) * dim.pixXY) + "px";
 	uiEdit.style.height = ((iWidth + 2) * dim.pixXY) + "px";
 	uiPalette = document.querySelector("div#palette");
 	createMapFromData();
+}
+window.addEventListener('DOMContentLoaded', (event) => {
 });
 
 </script>
