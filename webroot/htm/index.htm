@@ -12,6 +12,7 @@
 <script src="../js/scoreboard.js" type="text/javascript"></script>
 <script src="../js/mainMenu.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="../css/scoreboard.css">
+<link rel="stylesheet" type="text/css" href="../font/armalite.css">
 <link rel="stylesheet" type="text/css" href="../css/mainMenu.css">
 <style>
 body {
@@ -32,6 +33,7 @@ body {
 			<div id="points-guage"><div class="fuel"></div><div id="points-digit">0</div></div>
 			<div id="level-digit">0</div>
 		</div>
+		<div id="pauseButton" onclick="mainMenu.show();">Pause</div>
 	</div>
 	<div id="inventory-frame">
 		<div id="bacon" class="slot"><div class="icon"></div><div class="digit"></div></div>
@@ -40,9 +42,11 @@ body {
 		<div id="bombs" class="slot"><div class="icon"></div><div class="digit"></div></div>
 	</div>
 </div>
-
-<div id="mainMenu-frame" style="display: XXXnone;">
+<div id="mainMenu-bgScreen" style="display: block;"></div>
+<div id="mainMenu-frame" style="display: block;">
+	<div id="appHeading">war cargo</div>
 	<div class="closeButton" onclick="mainMenu.hide();">X</div>
+	<div class="playButton" onclick="mainMenu.hide();">PLAY</div>
 </div>
 
 <div id="phaser-example"></div>
