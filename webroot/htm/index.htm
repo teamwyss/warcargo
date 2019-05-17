@@ -10,6 +10,7 @@
 <script src="../js/filesaver.js" type="text/javascript"></script>
 <script src="../js/embed.js" type="text/javascript"></script>
 <script src="../js/scoreboard.js" type="text/javascript"></script>
+<script src="../js/mainMenu.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="../css/scoreboard.css">
 <link rel="stylesheet" type="text/css" href="../css/mainMenu.css">
 <style>
@@ -40,8 +41,8 @@ body {
 	</div>
 </div>
 
-<div id="mainMenu-frame">
-
+<div id="mainMenu-frame" style="display: XXXnone;">
+	<div class="closeButton" onclick="mainMenu.hide();">X</div>
 </div>
 
 <div id="phaser-example"></div>
@@ -168,6 +169,7 @@ function create() {
 	jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 	
 	scoreboard.init(this);
+	mainMenu.init();
 
 }
 

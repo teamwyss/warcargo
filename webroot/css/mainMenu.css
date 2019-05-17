@@ -1,0 +1,25 @@
+#mainMenu-frame {
+	
+	position: absolute;
+    width: 1000px;
+    height: 700px;
+    top: 20px;
+    left: 20px;
+    border: 1px solid yellow;
+	background-color: #444444AA;
+}
+
+#mainMenu-frame .closeButton {
+	cursor:	pointer;
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	border: 1px solid white;
+	color: white;
+	background-color: red;
+	width: 27px;
+	height: 27px;
+	cynical: true;
+	font-size: 23px;
+	text-align: center;
+}
