@@ -9,13 +9,22 @@ pixel {
 	height: 32px;
 	background-color: #ddeedd;
 	display: inline-block;
-	background-image:url('../img/tiles-1.png?refreshNOW');
+	background-image:url('../img/tiles-1.png?wikiid=truuu');
 	background-repeat: no-repeat;
 	background-position: 0px 0px;
 	background-size: 288px auto;
 }
 pixel:hover {
 	background-color: yellow;
+}
+div#palette {
+	position: fixed;
+}
+div#palette pixel {
+    border: 3px solid white;
+}
+div#palette pixel.selected {
+    border: 3px solid red;
 }
 </style>
 <script type="text/javascript" src="levelDataOld.js"></script>
@@ -58,7 +67,9 @@ function decorateImg(iCounterXY, ixInsideSprite, isPalette) {
 		+ ");\" id=\"T" + iCounterXY + "\"";
 	if (isPalette) {
 		sClick = " onclick=\"iInk = " + iCounterXY 
-			+ ";\" id=\"P" + iCounterXY + "\"";
+			+ ";refreshPalette();\" id=\"P" + iCounterXY + "\""
+			+ " class=\"" + (ixInsideSprite == iInk ? "selected" : "") + "\""
+			;
 	}
 	if (ixInsideSprite == 0) {
 		return "<pixel" + sClick 
@@ -88,7 +99,7 @@ function convertImgIxToCssStyle(ixInsideSprite) {
 }
 function swap(tile, iTrg) {
 	var iInkToSet = iInk;
-	if (data[iTrg] != 0) {
+	if (data[iTrg] == iInk) {
 		iInkToSet = 0;
 	}
 	data[iTrg] = iInkToSet;
@@ -106,8 +117,11 @@ function getPaletteHtml() {
 	}
 	return sOut;
 }
-function createMapFromData() {
+function refreshPalette() {
 	uiPalette.innerHTML = getPaletteHtml();
+}
+function createMapFromData() {
+	refreshPalette();
 	var sOut = "";
 	var iCounterXY = 0;
 	for (var iH = 0; iH < iHeight; iH++) {
@@ -153,6 +167,14 @@ window.addEventListener('DOMContentLoaded', (event) => {
 </head>
 <body>
 <div id="palette"></div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 <div id="uiEdit" style="width: 800px;line-height:10px;"></div>
 <button onclick="outputDataToField()">output</button>
 <textarea id="uiOutput" style="width: 1500px;height:200px;font-family: monospace;"></textarea>
