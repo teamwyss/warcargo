@@ -79,6 +79,7 @@ div#health-label {
 	left: 60px;
 	top: 0px;
 	background-color: #88FFAA88;
+	background-image: url("../img/icnHeartOff20x20.png");
 }
 #health-guage .fuel {
 	background-color: #00000044;
