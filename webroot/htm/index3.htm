@@ -42,7 +42,7 @@ body {
 	<div id="inventory-frame">
 		<div id="bacon" class="slot"><div class="icon"></div><div class="digit"></div></div>
 		<div id="wood"  class="slot"><div class="icon"></div><div class="digit"></div></div>
-		<div id="stone" class="slot"><div class="icon"></div><div class="digit"></div></div>
+		<div id="poop"  class="slot"><div class="icon"></div><div class="digit"></div></div>
 		<div id="bombs" class="slot"><div class="icon"></div><div class="digit"></div></div>
 	</div>
 </div>
@@ -87,6 +87,7 @@ function preload() {
 	game.load.image('bgWater','../img/bgWater.png');
     game.load.image('bacon', '../img/bacon.png');
     game.load.image('wood', '../img/wood.png');
+    game.load.image('poop', '../img/poop.png');
 
     // Scoreboard
     game.load.image('bgScoreboard', '../img/bgScoreboard.png');
@@ -166,6 +167,12 @@ function create() {
 		game.physics.enable(woodToAdd, Phaser.Physics.ARCADE);
     }
 
+    for (var iB = 0; iB < aiPos.length; iB++) {
+        //  This creates a new Phaser.Sprite instance within the group
+        var poopToAdd = food.create(aiPos[iB][0] + 100, aiPos[iB][1] - 50, 'poop');
+		game.physics.enable(poopToAdd, Phaser.Physics.ARCADE);
+    }
+
 	//player = game.add.sprite(80, 80, 'dude');
 	player = game.add.sprite(game.world.centerX, game.world.centerY, 'dude');
 	player.anchor.setTo(0.5, 0.5);
@@ -200,8 +207,11 @@ function foodCollisionHandler (player, foodItem) {
 	if (foodItem.key == "bacon") {
 		scoreboard.points.add(100);
 		scoreboard.bacon.add();
+	if (foodItem.key == "poop") {
+		scoreboard.points.add(-10);
+		//scoreboard.poop.add();
 	} else {
-		scoreboard.health.add(-10);
+		scoreboard.health.add(100);
 		scoreboard.wood.add();
 	}
 }

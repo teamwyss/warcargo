@@ -5,6 +5,7 @@ var scoreboard = {
 	level: null,
 	health: null,
 	bacon: null,
+	wood: null,
 	guage: null,
 
 	init: function(game) {
@@ -40,14 +41,17 @@ var scoreboard = {
 		this.health = this.createNewStat().init("#health-digit");
 		this.health.add(100);
 		this.health.max = 100;
+		this.healthGuage = this.createNewGuage().init("health", "#health-guage");//.refresh();
 		this.health.afterAdd = function(){
 			//TODO change color depending on health. scoreboard.health.ui.style.backgroundColor = "white";
+			scoreboard.healthGuage.refresh();
 		}
-		this.healthGuage = this.createNewGuage().init("#health-guage");
+		this.healthGuage.refresh();
 		
 		this.bacon = this.createNewSlot().init("#inventory-frame div#bacon", "bacon");
+		this.wood = this.createNewSlot().init("#inventory-frame div#wood", "wood");
 		
-		this.pointsGuage = this.createNewGuage().init("#points-guage");
+		this.pointsGuage = this.createNewGuage().init("points", "#points-guage");
 		
 	},
 	createNewStat: function() {
@@ -78,20 +82,26 @@ var scoreboard = {
 	},
 	createNewGuage: function() {
 		return {
+			stat:null,
 			uiFrame:null,
 			uiFuel:null,
-			init: function(xpath) {
+			init: function(sStatId, xpath) {
+				this.stat = scoreboard[sStatId];
 				this.uiFrame = document.querySelector(xpath);
 				this.uiFuel = document.querySelector(xpath + " .fuel");
 				return this;
 			},
-			refresh: function(xpath) {
-				var iPc = Math.round((scoreboard.points.count * 100) / scoreboard.points.max);
+			refresh: function() {
+				//var iPc = Math.round((scoreboard.points.count * 100) / scoreboard.points.max);
 				//var iPc = Math.round((scoreboard["health"].count * 100) / scoreboard["health"].max);
+				var iPc = Math.round((this.stat.count * 100) / this.stat.max);
 				var iPx = 2 * iPc; 
 				//this.uiFrame.innerHTML = iPx + "px == " + iPc + "%";
 				this.uiFuel.style.width = iPx + "px";
-			}
+				this.afterRefresh();
+				return this;
+			},
+			afterRefresh: function(){}
 		}
 	},
 	createNewSlot: function() {

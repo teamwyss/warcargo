@@ -85,6 +85,7 @@ div#health-label {
 	height: 20px;
 	width: 1px;
 	transition: width .5s;
+	background-image: url("../img/icnHeartOn20x20.png");
 }
 
 #player-stats-frame #level-digit {
