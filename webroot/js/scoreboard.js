@@ -3,6 +3,7 @@ var scoreboard = {
 		
 	points: null,
 	level: null,
+	health: null,
 	bacon: null,
 	guage: null,
 
@@ -36,8 +37,18 @@ var scoreboard = {
 			);
 		}
 		
+		this.health = this.createNewStat().init("#health-digit");
+		this.health.add(100);
+		this.health.max = 100;
+		this.health.afterAdd = function(){
+			//TODO change color depending on health. scoreboard.health.ui.style.backgroundColor = "white";
+		}
+		this.healthGuage = this.createNewGuage().init("#health-guage");
+		
 		this.bacon = this.createNewSlot().init("#inventory-frame div#bacon", "bacon");
+		
 		this.pointsGuage = this.createNewGuage().init("#points-guage");
+		
 	},
 	createNewStat: function() {
 		return {
@@ -76,6 +87,7 @@ var scoreboard = {
 			},
 			refresh: function(xpath) {
 				var iPc = Math.round((scoreboard.points.count * 100) / scoreboard.points.max);
+				//var iPc = Math.round((scoreboard["health"].count * 100) / scoreboard["health"].max);
 				var iPx = 2 * iPc; 
 				//this.uiFrame.innerHTML = iPx + "px == " + iPc + "%";
 				this.uiFuel.style.width = iPx + "px";

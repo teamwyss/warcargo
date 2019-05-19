@@ -33,8 +33,12 @@ body {
 			<div id="points-guage"><div class="fuel"></div><div id="points-digit">0</div></div>
 			<div id="level-digit">0</div>
 		</div>
-		<div id="pauseButton" onclick="mainMenu.show();">Pause</div>
+		<div id="health-frame">
+			<div id="health-label">health</div>
+			<div id="health-guage"><div class="fuel"></div><div id="health-digit">100</div></div>
+		</div>
 	</div>
+	<div id="pauseButton" onclick="mainMenu.show();">Pause</div>
 	<div id="inventory-frame">
 		<div id="bacon" class="slot"><div class="icon"></div><div class="digit"></div></div>
 		<div id="wood" class="slot"><div class="icon"></div><div class="digit"></div></div>
@@ -45,18 +49,16 @@ body {
 <div id="mainMenu-bgScreen" style="display: block;"></div>
 <div id="mainMenu-frame" style="display: block;">
 	<div id="appHeading">war cargo</div>
+	<div id="appHeadingExplosion"></div>
 	<div class="closeButton" onclick="mainMenu.hide();">X</div>
 	<div class="playButton" onclick="mainMenu.hide();">PLAY</div>
 </div>
 
-<div id="phaser-example"></div>
+<div id="game-canvass"></div>
 <script type="text/javascript">
 
 var IDE_HOOK = false;
 var VERSION = '0.0.3';
-
-//var WW = 17;
-//var WR = 18;
 
 var wc = {
 	window: {
@@ -68,7 +70,7 @@ var wc = {
 	}
 };
 
-var game = new Phaser.Game(wc.window.w, wc.window.h, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(wc.window.w, wc.window.h, Phaser.CANVAS, 'game-canvass', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
 	
@@ -120,7 +122,7 @@ function create() {
 
 	map.addTilesetImage('tiles-1');
 
-	map.setCollisionByExclusion([ 7, 8, 9, 16, 17, 18, 20, 21, 22, 23, 24 ,25 ,26 ,27]);
+	map.setCollisionByExclusion([ 1, 2, 3, 7, 8, 9, 11, 12, 17, 18, 20, 21, 22, 23, 24 ,25 ,26 ,27]);
 
 	layer = map.createLayer('Tile Layer 1');
 
@@ -174,6 +176,12 @@ function create() {
 	
 	scoreboard.init(this);
 	mainMenu.init();
+	//setTimeout(
+	//	function(){
+			mainMenu.show();
+	//	}
+	//	,1000
+	//);
 
 }
 
@@ -183,6 +191,7 @@ function create() {
 function foodCollisionHandler (player, foodItem) {
 	foodItem.kill();
 	scoreboard.points.add(100);
+	scoreboard.health.add(-10);
 	scoreboard.bacon.add();
 }
 

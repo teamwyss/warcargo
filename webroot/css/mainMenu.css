@@ -48,6 +48,16 @@
 	font-size: 60pt;
 	width: 100%;
 	text-align: center;
-	padding-top: 20px;
+	padding-top: 30px;
 }
-
+#appHeadingExplosion {
+	top: 0px;
+	XXbottom: 60px;
+	left: 0;
+	right: 0;
+	margin: auto;
+	width: 400px;
+	height: 400px;
+	XXXborder: 1px dotted white;	
+	position: absolute;
+}

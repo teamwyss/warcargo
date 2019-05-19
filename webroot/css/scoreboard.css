@@ -29,27 +29,36 @@
 }
 #player-stats-frame #points-digit,
 #player-stats-frame #points-guage,
+#player-stats-frame #health-digit,
+#player-stats-frame #health-guage,
 #player-stats-frame #level-digit {
-	XXXXborder: 1px solid lime;
 	position: absolute;
 	top: 0px;
-	XXXXXXheight: 40px;
 }
 div#points-level-frame {
     top: 10px;
     position: relative;
 }
-div#level-label {
+div#health-frame {
+    top: 40px;
+    position: relative;
+}
+div#level-label,
+div#health-label {
+    top: 0px;
 	position: absolute;
 	left: 10px;
 }
-#player-stats-frame #points-digit {
+#player-stats-frame #points-digit,
+#player-stats-frame #health-digit {
 	width: 100%;
 	left: 0px;
 	color: white;
 	text-shadow: 1px 1px #000000;
 	text-align: center;
 }
+
+/* POINTS GUAGE */
 #player-stats-frame #points-guage {
 	width: 200px;
 	XXXXXborder: 1px solid yellow;
@@ -57,6 +66,21 @@ div#level-label {
 	background-color: #88FFAA88;
 }
 #points-guage .fuel {
+	background-color: #00000044;
+	height: 20px;
+	width: 1px;
+	transition: width .5s;
+}
+
+/* POINTS GUAGE */
+#player-stats-frame #health-guage {
+	width: 200px;
+	XXXXXborder: 1px solid yellow;
+	left: 60px;
+	top: 0px;
+	background-color: #88FFAA88;
+}
+#health-guage .fuel {
 	background-color: #00000044;
 	height: 20px;
 	width: 1px;
