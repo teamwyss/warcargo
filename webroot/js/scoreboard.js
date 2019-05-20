@@ -8,6 +8,7 @@ var scoreboard = {
 	wood: null,
 	guage: null,
 
+	
 	init: function(game) {
 		
 		this.ui = document.querySelector("scoreboard-frame");
@@ -43,10 +44,24 @@ var scoreboard = {
 		this.health.max = 100;
 		this.healthGuage = this.createNewGuage().init("health", "#health-guage");//.refresh();
 		this.health.afterAdd = function(){
-			//TODO change color depending on health. scoreboard.health.ui.style.backgroundColor = "white";
 			scoreboard.healthGuage.refresh();
+			if (scoreboard.health.count <= 0) {
+				mainMenu.setMessage(
+					"u ded"
+					,"you died sucker!"
+					,"dead.png"
+				);
+				mainMenu.setPlayButtonText("PLAY AGAIN");
+				mainMenu.show();
+				scoreboard.resetAllScores();
+			}
 		}
 		this.healthGuage.refresh();
+		this.healthGuage.afterRefresh = function(){
+			// Change color depending on health.
+			var sColor = util.graphics.percentToColor(scoreboard.health.count);
+			scoreboard.healthGuage.uiFuel.style.backgroundColor = sColor;
+		};
 		
 		this.bacon = this.createNewSlot().init("#inventory-frame div#bacon", "bacon");
 		this.wood = this.createNewSlot().init("#inventory-frame div#wood", "wood");
@@ -66,9 +81,10 @@ var scoreboard = {
 			},
 			add: function(iChange){
 				this.count += (typeof iChange == "undefined") ? 1 : iChange;
-				if (this.count >= this.max) {
-					this.count = this.max;
-				}
+				//if (this.count >= this.max) {
+				//	this.count = this.max;
+				//}
+				this.count = util.maths.minMax(this.count, 0, this.max);
 				this.ui.innerHTML = this.count;
 				this.afterAdd();
 				return this;
@@ -107,6 +123,7 @@ var scoreboard = {
 	createNewSlot: function() {
 		return {
 			id:null,
+			max:1000,
 			count:0,
 			ui:null, 
 			digit:null,
@@ -123,7 +140,7 @@ var scoreboard = {
 			},
 			add: function(iChange){
 				this.count += (typeof iChange == "undefined") ? 1 : iChange;
-				//d ebugger;
+				this.count = util.maths.minMax(this.count, 0, this.max);
 				if (this.count > 0) {
 					this.icon.style.opacity = "1.0";
 				}
@@ -131,5 +148,14 @@ var scoreboard = {
 				return this;
 			}
 		}
+	},
+	resetAllScores: function() {
+		this.points.add(-1000);
+		this.level.add(-1000);
+		this.bacon.add(-1000);
+		this.wood.add(-1000);
+		this.health.add(100);
 	}
+	
+
 }

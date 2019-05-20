@@ -61,3 +61,40 @@
 	XXXborder: 1px dotted white;	
 	position: absolute;
 }
+
+/* Main Menu Message */
+#mainMenu-frame #message {
+	position: absolute;
+	top: 140px;
+	width: 800px;
+	height: 400px;
+	margin-left: auto;
+	margin-right: auto;
+	right: 0;
+	left: 0;
+	XXXborder: 2px solid yellow;
+}
+#message #heading {
+	font-size: 30pt;
+	width: 99%;
+	text-align: center;
+	font-weight: 900;
+	color: #990000;
+	margin-top: 30px;
+	margin-bottom: 20px;
+}
+#message #text {
+	font-size: 20pt;
+	width: 99%;
+	text-align: center;
+}
+#message #icon {
+	/* TODO */
+	display: none;
+}
+
+
+
+
+
+
