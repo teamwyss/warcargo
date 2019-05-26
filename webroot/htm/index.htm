@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <!-- saved from url=(0058)https://examples.phaser.io/embed.php?f=games/starstruck.js -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>WarCargo</title>
@@ -95,11 +95,12 @@ function preload() {
 	//game.load.image('starBig', '../img/star2.png');
 	game.load.image('bgGrass', '../img/bgGrass.png');
 	game.load.image('bgWater','../img/bgWater.png');
-    game.load.image('bacon', '../img/bacon.png');
-    game.load.image('wood', '../img/wood.png');
+	game.load.image('bacon', '../img/bacon.png');
+	game.load.image('wood', '../img/wood.png');
+	game.load.image('handgun', '../img/handgun.png')
 
-    // Scoreboard
-    game.load.image('bgScoreboard', '../img/bgScoreboard.png');
+	// Scoreboard
+	game.load.image('bgScoreboard', '../img/bgScoreboard.png');
 
 }
 
@@ -108,6 +109,7 @@ var tileset;
 var layer;
 var player;
 var food;
+var tools;
 //var bacon;
 //var facing = 'left';
 var jumpTimer = 0;
@@ -164,17 +166,21 @@ function create() {
 		,[(27.5 * 64), 29 * 64]
 		,[2 * 64, 4 * 64]
 	];
-    for (var iB = 0; iB < aiPos.length; iB++) {
-        //  This creates a new Phaser.Sprite instance within the group
-        var baconToAdd = food.create(aiPos[iB][0], aiPos[iB][1], 'bacon');
+	for (var iB = 0; iB < aiPos.length; iB++) {
+		//  This creates a new Phaser.Sprite instance within the group
+		var baconToAdd = food.create(aiPos[iB][0], aiPos[iB][1], 'bacon');
 		game.physics.enable(baconToAdd, Phaser.Physics.ARCADE);
-    }
+	}
 
-    for (var iB = 0; iB < aiPos.length; iB++) {
-        //  This creates a new Phaser.Sprite instance within the group
-        var woodToAdd = food.create(aiPos[iB][0] + 100, aiPos[iB][1] - 50, 'wood');
+	for (var iB = 0; iB < aiPos.length; iB++) {
+		//  This creates a new Phaser.Sprite instance within the group
+		var woodToAdd = food.create(aiPos[iB][0] + 100, aiPos[iB][1] - 50, 'wood');
 		game.physics.enable(woodToAdd, Phaser.Physics.ARCADE);
-    }
+	}
+
+	tools = game.add.group();
+	var handgunToAdd = tools.create(game.world.centerX + 200, game.world.centerY, 'handgun');
+	game.physics.enable(handgunToAdd, Phaser.Physics.ARCADE);
 
 	//player = game.add.sprite(80, 80, 'dude');
 	player = game.add.sprite(game.world.centerX, game.world.centerY, 'dude');
@@ -191,14 +197,12 @@ function create() {
 	cursors = game.input.keyboard.createCursorKeys();
 	jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 	
+	//handgun = game.add.sprite(0, 0, 'handgun');
+	//player.addChild(handgun);
+	
 	scoreboard.init(this);
 	mainMenu.init();
-	//setTimeout(
-	//	function(){
-			mainMenu.show();
-	//	}
-	//	,1000
-	//);
+	mainMenu.show();
 
 }
 
@@ -216,11 +220,26 @@ function foodCollisionHandler (player, foodItem) {
 	}
 }
 
+function toolsCollisionHandler (player, item) {
+	item.kill();
+	//var handgunToAdd = tools.create(game.world.centerX + 200, game.world.centerY, 'handgun');
+	//game.physics.enable(handgunToAdd, Phaser.Physics.ARCADE);
+
+	
+	handgun = game.add.sprite(0, 0, 'handgun');
+	player.addChild(handgun);
+
+	
+	//scoreboard.points.add(100);
+	//scoreboard.bacon.add();
+}
+
 function update() {
 	
 	/* Bacon */
 	game.physics.arcade.collide(player, food, foodCollisionHandler);
 
+	game.physics.arcade.collide(player, tools, toolsCollisionHandler);
 
 	game.physics.arcade.collide(player, layer);
 	player.rotation = game.physics.arcade.angleToPointer(player) + 1.57;
