@@ -95,7 +95,9 @@ function preload() {
 	game.load.image('bgWater','../img/bgWater.png');
 	game.load.image('bacon', '../img/bacon.png');
 	game.load.image('wood', '../img/wood.png');
+
 	game.load.image('handgun', '../img/tool.handgun.png')
+    game.load.image('bullet', '../img/tool.bullet.png');
 
 	// Scoreboard
 	game.load.image('bgScoreboard', '../img/bgScoreboard.png');
@@ -188,6 +190,29 @@ function create() {
 
 	cursors = game.input.keyboard.createCursorKeys();
 	jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+	// Weapon stuff Start
+	weapon = game.add.weapon(100, 'bullet');
+
+    //  The bullet will be automatically killed when it leaves the world bounds
+    weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+
+    //  The speed at which the bullet is fired
+    weapon.bulletSpeed = 600;
+
+    //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
+    weapon.fireRate = 150;
+
+    //  Tell the Weapon to track the 'player' Sprite
+    //  With no offsets from the position
+    //  But the 'true' argument tells the weapon to track sprite rotation
+    weapon.trackSprite(player, 50, 0, true);
+    //weapon.bulletAngleOffset = -90;
+    //weapon.fireFrom.set(-5, 50);
+    weapon.bulletAngleVariance = 5;
+    weapon.fireAngle = Phaser.ANGLE_DOWN;
+
+	// Weapon stuff End
 	
 	scoreboard.init(this);
 	mainMenu.init();
@@ -212,7 +237,7 @@ function foodCollisionHandler (player, item) {
 function toolsCollisionHandler (player, item) {
 	playerStatus.hasTool = true;
 	item.kill();
-	handgun = game.add.sprite(-5, -50, 'handgun');
+	handgun = game.add.sprite(10, -5, 'handgun');
 	player.addChild(handgun);
 	player.frame = 5;
 }
@@ -225,7 +250,7 @@ function update() {
 	game.physics.arcade.collide(player, tools, toolsCollisionHandler);
 
 	game.physics.arcade.collide(player, layer);
-	player.rotation = game.physics.arcade.angleToPointer(player) + 1.57;
+	player.rotation = game.physics.arcade.angleToPointer(player); // + 1.57;
 
 	player.body.velocity.x = 0;
 	player.body.velocity.y = 0;
@@ -242,7 +267,10 @@ function update() {
 		player.body.velocity.x = wc.player.speedXY;
 	}
 	if (playerStatus.hasTool) {
-		// dont do nuffink
+		// SHOOT SHOOT SHOOOOT!
+		if (jumpButton.isDown) {
+			weapon.fire();
+		}
 	} else if (jumpButton.isDown) {
 		player.animations.play('act');
 	} else {
