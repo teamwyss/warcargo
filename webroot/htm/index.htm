@@ -90,16 +90,12 @@ function preload() {
 
 	game.load.tilemap('level1', '../data/level1.json', null, Phaser.Tilemap.TILED_JSON);
 	game.load.image('tiles-1', '../img/tiles-1.png');
-	//game.load.spritesheet('dude', '../img/dude.png', 32, 48);
 	game.load.spritesheet('dude', '../img/dude.png', 80, 80);
-	//game.load.spritesheet('droid', '../img/droid.png', 32, 32);
-	//game.load.image('starSmall', '../img/star.png');
-	//game.load.image('starBig', '../img/star2.png');
 	game.load.image('bgGrass', '../img/bgGrass.png');
 	game.load.image('bgWater','../img/bgWater.png');
 	game.load.image('bacon', '../img/bacon.png');
 	game.load.image('wood', '../img/wood.png');
-	game.load.image('handgun', '../img/handgun.png')
+	game.load.image('handgun', '../img/tool.handgun.png')
 
 	// Scoreboard
 	game.load.image('bgScoreboard', '../img/bgScoreboard.png');
@@ -112,13 +108,10 @@ var layer;
 var player;
 var food;
 var tools;
-//var bacon;
-//var facing = 'left';
 var jumpTimer = 0;
 var cursors;
 var jumpButton;
 var bgGrass;
-//var bgWater;
 
 function create() {
 
@@ -137,7 +130,7 @@ function create() {
 
 	map.addTilesetImage('tiles-1');
 
-	map.setCollisionByExclusion([ 1, 2, 3, 7, 8, 9, 11, 12, 17, 18, 20, 21, 22, 23, 24 ,25 ,26 ,27]);
+	map.setCollisionByExclusion([ 1, 2, 3, 7, 8, 9, 10, 11, 12, 17, 18, 20, 21, 22, 23, 24 ,25 ,26 ,27]);
 
 	layer = map.createLayer('Tile Layer 1');
 
@@ -146,37 +139,35 @@ function create() {
 	
 	layer.resizeWorld();
 
-	//game.physics.arcade.gravity.y = 250;
-	
-	
-	
 	/*
 	Add Bacon
 	*/
 	food = game.add.group();
-	var aiPos = [
-		[game.world.centerX - 250, game.world.centerY - 60]
-		,[game.world.centerX - 220, game.world.centerY - 42]
-		,[game.world.centerX - 200, game.world.centerY - 32]
-		,[4 * 64, 17 * 64]
-		,[22 * 64, 1 * 64]
-		,[40 * 64, 6 * 64]
-		,[(32.5 * 64), 40 * 64]
-		,[1 * 64, 1 * 64]
-		,[1 * 64, 30 * 64]
-		,[(30.5 * 64), 31 * 64]
-		,[(27.5 * 64), 29 * 64]
-		,[2 * 64, 4 * 64]
+	var axyPos = [
+		xy(game.world.centerX - 250, game.world.centerY - 60)
+		,xy(game.world.centerX - 220, game.world.centerY - 42)
+		,xy(game.world.centerX - 200, game.world.centerY - 32)
+		,xy(4 * 64, 17 * 64)
+		,xy(22 * 64, 1 * 64)
+		,xy(40 * 64, 6 * 64)
+		,xy((32.5 * 64), 40 * 64)
+		,xy(1 * 64, 1 * 64)
+		,xy(1 * 64, 30 * 64)
+		,xy((30.5 * 64), 31 * 64)
+		,xy((27.5 * 64), 29 * 64)
+		,xy(2 * 64, 4 * 64)
 	];
-	for (var iB = 0; iB < aiPos.length; iB++) {
+	for (var iB = 0; iB < axyPos.length; iB++) {
 		//  This creates a new Phaser.Sprite instance within the group
-		var baconToAdd = food.create(aiPos[iB][0], aiPos[iB][1], 'bacon');
+		var baconToAdd = food.create(axyPos[iB].x, axyPos[iB].y, 'bacon');
 		game.physics.enable(baconToAdd, Phaser.Physics.ARCADE);
 	}
 
-	for (var iB = 0; iB < aiPos.length; iB++) {
-		//  This creates a new Phaser.Sprite instance within the group
-		var woodToAdd = food.create(aiPos[iB][0] + 100, aiPos[iB][1] - 50, 'wood');
+	for (var iB = 0; iB < axyPos.length; iB++) {
+		//  This creates a new Phaser.Sprite instance within the group.
+		var iX = axyPos[iB].x + 100;
+		var iY = axyPos[iB].y - 50;
+		var woodToAdd = food.create(iX, iY, 'wood');
 		game.physics.enable(woodToAdd, Phaser.Physics.ARCADE);
 	}
 
@@ -211,9 +202,9 @@ function create() {
 /**
  * Called when the player collides with (collects) some food.
  */
-function foodCollisionHandler (player, foodItem) {
-	foodItem.kill();
-	if (foodItem.key == "bacon") {
+function foodCollisionHandler (player, item) {
+	item.kill();
+	if (item.key == "bacon") {
 		scoreboard.points.add(100);
 		scoreboard.bacon.add();
 	} else {
@@ -224,16 +215,8 @@ function foodCollisionHandler (player, foodItem) {
 
 function toolsCollisionHandler (player, item) {
 	item.kill();
-	//var handgunToAdd = tools.create(game.world.centerX + 200, game.world.centerY, 'handgun');
-	//game.physics.enable(handgunToAdd, Phaser.Physics.ARCADE);
-
-	
-	handgun = game.add.sprite(0, 0, 'handgun');
+	handgun = game.add.sprite(15, -50, 'handgun');
 	player.addChild(handgun);
-
-	
-	//scoreboard.points.add(100);
-	//scoreboard.bacon.add();
 }
 
 function update() {

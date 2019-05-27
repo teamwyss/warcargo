@@ -16,4 +16,8 @@ var util = {
 			return Math.max(Math.min(iRaw, iMax), iMin);
 		}
 	}
+};
+
+function xy(iX, iY) {
+	return {x: iX, y: iY};
 }
