@@ -70,7 +70,7 @@ body {
 <script type="text/javascript">
 
 var IDE_HOOK = false;
-var VERSION = '0.0.3';
+var VERSION = '0.0.4';
 
 var wc = {
 	window: {
@@ -90,7 +90,7 @@ function preload() {
 
 	game.load.tilemap('level1', '../data/level1.json', null, Phaser.Tilemap.TILED_JSON);
 	game.load.image('tiles-1', '../img/tiles-1.png');
-	game.load.spritesheet('dude', '../img/dude.png', 80, 80);
+	game.load.spritesheet('player', '../img/player.png', 80, 80);
 	game.load.image('bgGrass', '../img/bgGrass.png');
 	game.load.image('bgWater','../img/bgWater.png');
 	game.load.image('bacon', '../img/bacon.png');
@@ -175,8 +175,7 @@ function create() {
 	var handgunToAdd = tools.create(game.world.centerX + 200, game.world.centerY, 'handgun');
 	game.physics.enable(handgunToAdd, Phaser.Physics.ARCADE);
 
-	//player = game.add.sprite(80, 80, 'dude');
-	player = game.add.sprite(game.world.centerX, game.world.centerY, 'dude');
+	player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
 	player.anchor.setTo(0.5, 0.5);
 	game.physics.enable(player, Phaser.Physics.ARCADE);
 
@@ -189,9 +188,6 @@ function create() {
 
 	cursors = game.input.keyboard.createCursorKeys();
 	jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-	
-	//handgun = game.add.sprite(0, 0, 'handgun');
-	//player.addChild(handgun);
 	
 	scoreboard.init(this);
 	mainMenu.init();
@@ -214,9 +210,11 @@ function foodCollisionHandler (player, item) {
 }
 
 function toolsCollisionHandler (player, item) {
+	playerStatus.hasTool = true;
 	item.kill();
-	handgun = game.add.sprite(15, -50, 'handgun');
+	handgun = game.add.sprite(-5, -50, 'handgun');
 	player.addChild(handgun);
+	player.frame = 5;
 }
 
 function update() {
@@ -243,12 +241,18 @@ function update() {
 	} else if (cursors.right.isDown) {
 		player.body.velocity.x = wc.player.speedXY;
 	}
-	if (jumpButton.isDown) {
+	if (playerStatus.hasTool) {
+		// dont do nuffink
+	} else if (jumpButton.isDown) {
 		player.animations.play('act');
 	} else {
 		player.animations.stop();
 		player.frame = 0;
 	}
+}
+
+var playerStatus = {
+	hasTool: false
 }
 
 function render () {
