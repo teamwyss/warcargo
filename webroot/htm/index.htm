@@ -25,6 +25,8 @@ body {
 	font-size: 14px;
 	background-color: #000000;
 	color: #fff;
+	cursor: crosshair;
+	cursor: url('../img/cursor.crosshairs.png') 16 16, crosshair;	
 }
 </style>
 </head>
@@ -74,7 +76,7 @@ var VERSION = '0.0.4';
 
 var wc = {
 	window: {
-		w: window.innerWidth - 2, 
+		w: window.innerWidth - 2,
 		h: window.innerHeight - 4
 	},
 	player: {
@@ -85,7 +87,7 @@ var wc = {
 var game = new Phaser.Game(wc.window.w, wc.window.h, Phaser.CANVAS, 'game-canvass', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
-	
+
 	document.title = "WarCargo " + VERSION;
 
 	game.load.tilemap('level1', '../data/level1.json', null, Phaser.Tilemap.TILED_JSON);
@@ -99,6 +101,9 @@ function preload() {
 	game.load.image('handgun', '../img/tool.handgun.png')
     game.load.image('bullet', '../img/tool.bullet.png');
 
+	// Sound
+    //game.load.audio('explosion', '../snd/tools.explosion.mp3');
+	
 	// Scoreboard
 	game.load.image('bgScoreboard', '../img/bgScoreboard.png');
 
@@ -112,8 +117,10 @@ var food;
 var tools;
 var jumpTimer = 0;
 var cursors;
-var jumpButton;
+var actionButton;
 var bgGrass;
+
+//var explosion;
 
 function create() {
 
@@ -138,7 +145,7 @@ function create() {
 
 	// Un-comment this on to see the collision tiles.
 	//layer.debug = true;
-	
+
 	layer.resizeWorld();
 
 	/*
@@ -189,31 +196,27 @@ function create() {
 	game.camera.follow(player);
 
 	cursors = game.input.keyboard.createCursorKeys();
-	jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	actionButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-	// Weapon stuff Start
+	// Weapon stuff Start -------------------------------------------------------
 	weapon = game.add.weapon(100, 'bullet');
-
     //  The bullet will be automatically killed when it leaves the world bounds
     weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-
     //  The speed at which the bullet is fired
     weapon.bulletSpeed = 600;
-
     //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
-    weapon.fireRate = 150;
-
-    //  Tell the Weapon to track the 'player' Sprite
-    //  With no offsets from the position
-    //  But the 'true' argument tells the weapon to track sprite rotation
+    weapon.fireRate = 300;
+    // Weapon tracks the 'player' with offsets relative to player.
+    // The 'true' argument tells the weapon to track sprite rotation
     weapon.trackSprite(player, 50, 0, true);
-    //weapon.bulletAngleOffset = -90;
-    //weapon.fireFrom.set(-5, 50);
-    weapon.bulletAngleVariance = 5;
-    weapon.fireAngle = Phaser.ANGLE_DOWN;
+    weapon.bulletAngleVariance = 2; // Spray bullets a bit.
+    // Weapon stuff End ---------------------------------------------------------
 
-	// Weapon stuff End
-	
+    // Sound start ------------------------
+    //explosion = game.add.audio('explosion');
+    //game.sound.setDecodedCallback([explosion], start, this);
+    // Sound end ------------------------
+    
 	scoreboard.init(this);
 	mainMenu.init();
 	mainMenu.show();
@@ -243,7 +246,7 @@ function toolsCollisionHandler (player, item) {
 }
 
 function update() {
-	
+
 	/* Bacon */
 	game.physics.arcade.collide(player, food, foodCollisionHandler);
 
@@ -268,10 +271,11 @@ function update() {
 	}
 	if (playerStatus.hasTool) {
 		// SHOOT SHOOT SHOOOOT!
-		if (jumpButton.isDown) {
+		if (actionButton.isDown) {
 			weapon.fire();
+			//explosion.play();
 		}
-	} else if (jumpButton.isDown) {
+	} else if (actionButton.isDown) {
 		player.animations.play('act');
 	} else {
 		player.animations.stop();
@@ -290,8 +294,7 @@ function render () {
 		game.debug.body(player);
 		game.debug.bodyInfo(player, 16, 24);
 	}
-	
 }
-		
+
 </script>
 </body></html>
