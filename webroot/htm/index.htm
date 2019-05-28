@@ -140,7 +140,7 @@ var food;
 var tools;
 var jumpTimer = 0;
 var cursors;
-var actionButton;
+//TODO reallocate:: var spaceBar;
 var bgGrass;
 //  Sound
 var handWeaponSound;
@@ -221,7 +221,7 @@ function create() {
 	game.camera.follow(player);
 
 	cursors = game.input.keyboard.createCursorKeys();
-	actionButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	// TODO reallocate:: spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 	// Weapon stuff Start -------------------------------------------------------
 	weapon = game.add.weapon(100, 'bullet');
@@ -298,7 +298,7 @@ function update() {
 	}
 	if (playerStatus.hasTool) {
 		// SHOOT SHOOT SHOOOOT!
-		if (actionButton.isDown) {
+		if (game.input.activePointer.isDown) {
 			weapon.fire();
 			if (!playerStatus.isReloading) {
 				playerStatus.isReloading = true;
@@ -311,7 +311,7 @@ function update() {
 				handWeaponSound.play();
 			}		
 		}
-	} else if (actionButton.isDown) {
+	} else if (game.input.activePointer.isDown) {
 		player.animations.play('act');
 	} else {
 		player.animations.stop();
