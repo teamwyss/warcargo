@@ -102,7 +102,7 @@ function preload() {
     game.load.image('bullet', '../img/tool.bullet.png');
 
 	// Sound
-    //game.load.audio('explosion', '../snd/tools.explosion.mp3');
+    game.load.audio('explosion', '../snd/tools.explosion.mp3');
 	
 	// Scoreboard
 	game.load.image('bgScoreboard', '../img/bgScoreboard.png');
@@ -119,8 +119,8 @@ var jumpTimer = 0;
 var cursors;
 var actionButton;
 var bgGrass;
-
-//var explosion;
+//  Sound
+var explosion;
 
 function create() {
 
@@ -205,7 +205,7 @@ function create() {
     //  The speed at which the bullet is fired
     weapon.bulletSpeed = 600;
     //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
-    weapon.fireRate = 300;
+    weapon.fireRate = playerStatus.iReloadMs;
     // Weapon tracks the 'player' with offsets relative to player.
     // The 'true' argument tells the weapon to track sprite rotation
     weapon.trackSprite(player, 50, 0, true);
@@ -213,7 +213,7 @@ function create() {
     // Weapon stuff End ---------------------------------------------------------
 
     // Sound start ------------------------
-    //explosion = game.add.audio('explosion');
+    explosion = game.add.audio('explosion');
     //game.sound.setDecodedCallback([explosion], start, this);
     // Sound end ------------------------
     
@@ -273,7 +273,16 @@ function update() {
 		// SHOOT SHOOT SHOOOOT!
 		if (actionButton.isDown) {
 			weapon.fire();
-			//explosion.play();
+			if (!playerStatus.isReloading) {
+				playerStatus.isReloading = true;
+				setTimeout(
+					function() {
+						playerStatus.isReloading = false;
+					},
+					playerStatus.iReloadMs
+				);
+				explosion.play();
+			}		
 		}
 	} else if (actionButton.isDown) {
 		player.animations.play('act');
@@ -284,7 +293,9 @@ function update() {
 }
 
 var playerStatus = {
-	hasTool: false
+	hasTool: false, // Does player have any tool in hand?
+	isReloading: false, // Are we reloading next bullet?
+	iReloadMs: 400 // Time in miliseconds between shots.
 }
 
 function render () {
