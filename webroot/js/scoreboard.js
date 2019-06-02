@@ -133,7 +133,7 @@ var scoreboard = {
 				this.id = name
 				this.digit = this.ui.querySelector(".digit");
 				this.icon = this.ui.querySelector(".icon");
-				this.icon.style.backgroundImage = "url('../img/" + this.id + ".png')";
+				this.icon.style.backgroundImage = "url('../img/food." + this.id + ".svg')";
 				this.icon.style.opacity = "0.3";
 				
 				return this;
