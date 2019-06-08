@@ -86,16 +86,22 @@ var game = new Phaser.Game(wc.window.w, wc.window.h, Phaser.CANVAS, 'game-canvas
 var arsenal = {
 	selectedWeapon: null, // Set later.
 	revolver: {
-		imageFile: "tool.handgun.png",
-		bulletFile: "tool.bullet.png",
+		imageFile: "tool.revolver.svg",
+		bulletFile: "tool.bullet.svg", // Change to sprite, set ix here.
+		ixBulletSprite: 0, // Change to sprite, set ix here.
 		soundFile: "tools.explosion.mp3",
-		iReloadMs: 400 // Time in miliseconds between shots.
+		iReloadMs: 400, // Time in miliseconds between shots.
+		bulletAngleVariance: 5,
+		bulletSpeed: 500
 	},
 	laser: {
-		imageFile: "tool.laser.png",
-		bulletFile: "tool.beam.png",
+		imageFile: "tool.laser.svg",
+		bulletFile: "tool.bullet.svg",
+		ixBulletSprite: 1, // Change to sprite, set ix here.
 		soundFile: "tools.blaster.mp3",
-		iReloadMs: 200 // Time in miliseconds between shots.
+		iReloadMs: 200, // Time in miliseconds between shots.
+		bulletAngleVariance: 0,
+		bulletSpeed: 1000
 	}
 }
 arsenal.selectedWeapon = arsenal.laser;
@@ -108,24 +114,25 @@ function preload() {
 
 	game.load.tilemap('level1', '../data/level1.json', null, Phaser.Tilemap.TILED_JSON);
 	game.load.image('tiles-1', '../img/tiles-1.png');
-	game.load.spritesheet('player', '../img/player.png', 80, 80);
+	game.load.spritesheet('player', '../img/spritePlayer.svg', 80, 80);
 	game.load.image('bgGrass', '../img/bgGrass.png');
 	game.load.image('bgWater','../img/bgWater.png');
-	game.load.image('bacon', '../img/bacon.png');
-	game.load.image('wood', '../img/wood.png');
+	game.load.image('bacon', '../img/food.bacon.svg');
+	game.load.image('wood', '../img/food.wood.svg');
 
 	// Weapon
-	//game.load.image('handgun', '../img/tool.handgun.png')
-	//game.load.image('handWeapon', '../img/tool.laser.png')
-	game.load.image('handWeapon', '../img/' + arsenal.selectedWeapon.imageFile)
-    //game.load.image('bullet', '../img/tool.bullet.png');
-    //game.load.image('bullet', '../img/tool.beam.png');
-    game.load.image('bullet', '../img/' + arsenal.selectedWeapon.bulletFile);
+	game.load.image('revolver', '../img/' + arsenal.revolver.imageFile)
+    //game.load.image('bullet', '../img/' + arsenal.revolver.bulletFile);
+	bulletSpritesheet = game.load.spritesheet('bullet', '../img/' + arsenal.revolver.bulletFile, 24, 5);
+    game.load.audio('revolverSound', '../snd/' + arsenal.revolver.soundFile);
+    // Laser
+	game.load.image('laser', '../img/' + arsenal.laser.imageFile)
+    game.load.image('laserBullet', '../img/' + arsenal.laser.bulletFile);
+    game.load.audio('laserSound', '../snd/' + arsenal.laser.soundFile);
 
 	// Sound
     //game.load.audio('explosion', '../snd/tools.explosion.mp3');
-    //game.load.audio('handWeaponSound', '../snd/tools.blaster.mp3');
-    game.load.audio('handWeaponSound', '../snd/' + arsenal.selectedWeapon.soundFile);
+    //game.load.audio('revolverSound', '../snd/tools.blaster.mp3');
 	
 	// Scoreboard
 	game.load.image('bgScoreboard', '../img/bgScoreboard.png');
@@ -140,10 +147,11 @@ var food;
 var tools;
 var jumpTimer = 0;
 var cursors;
+var bulletSpritesheet;
 //TODO reallocate:: var spaceBar;
 var bgGrass;
 //  Sound
-var handWeaponSound;
+//var revolverSound;
 
 function create() {
 
@@ -204,13 +212,15 @@ function create() {
 	}
 
 	tools = game.add.group();
-	//var handgunToAdd = tools.create(game.world.centerX + 200, game.world.centerY, 'handgun');
-	var handWeaponToAdd = tools.create(game.world.centerX + 200, game.world.centerY, 'handWeapon');
-	//game.physics.enable(handgunToAdd, Phaser.Physics.ARCADE);
-	game.physics.enable(handWeaponToAdd, Phaser.Physics.ARCADE);
+	//var handgunToAdd = tools.create(game.world.centerX + 150, game.world.centerY, 'handgun');
+	var revolverToAdd = tools.create(game.world.centerX + 200, game.world.centerY, 'revolver');
+	game.physics.enable(revolverToAdd, Phaser.Physics.ARCADE);
+
+	var laserToAdd = tools.create(game.world.centerX - 150, game.world.centerY, 'laser');
+	game.physics.enable(laserToAdd, Phaser.Physics.ARCADE);
 
 	player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
-	player.anchor.setTo(0.5, 0.5);
+	player.anchor.setTo(0.39, 0.5);
 	game.physics.enable(player, Phaser.Physics.ARCADE);
 
 	player.body.bounce.y = 0; // was 0.2
@@ -224,24 +234,36 @@ function create() {
 	// TODO reallocate:: spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 	// Weapon stuff Start -------------------------------------------------------
+	// We will only know the settings when the type of weapon is selected.
 	weapon = game.add.weapon(100, 'bullet');
-    //  The bullet will be automatically killed when it leaves the world bounds
+    // The bullet will be automatically killed when it leaves the world bounds
     weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-    //  The speed at which the bullet is fired
-    weapon.bulletSpeed = 1500;
-    //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
-    weapon.fireRate = arsenal.selectedWeapon.iReloadMs;
-    // Weapon tracks the 'player' with offsets relative to player.
-    // The 'true' argument tells the weapon to track sprite rotation
-    weapon.trackSprite(player, 50, 0, true);
-    weapon.bulletAngleVariance = 2; // Spray bullets a bit.
-    // Weapon stuff End ---------------------------------------------------------
+	// The speed at which the bullet is fired
+	weapon.bulletSpeed = arsenal.selectedWeapon.bulletSpeed;
+	// Weapon tracks the 'player' with offsets relative to player.
+	// The 'true' argument tells the weapon to track sprite rotation
+	weapon.trackSprite(player, 50, 0, true);
+	//  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
+	weapon.fireRate = arsenal.selectedWeapon.iReloadMs;
+	weapon.bulletAngleVariance = arsenal.selectedWeapon.bulletAngleVariance; // Spray bullets a bit.
+	// Weapon stuff End ---------------------------------------------------------
 
-    // Sound start ------------------------
-    handWeaponSound = game.add.audio('handWeaponSound');
-    //game.sound.setDecodedCallback([handWeaponSound], start, this);
-    // Sound end ------------------------
-    
+	
+	
+	/*
+	*/
+	weapon.setBulletFrames(0, 1, true);
+	
+	
+	//d ebugger;
+	
+	// Sound start ------------------------
+	//revolverSound = game.add.audio('revolverSound');
+	arsenal.revolver.sound = game.add.audio('revolverSound');
+	arsenal.laser.sound = game.add.audio('laserSound');
+	//game.sound.setDecodedCallback([revolverSound], start, this);
+	// Sound end ------------------------
+	
 	scoreboard.init(this);
 	mainMenu.init();
 	mainMenu.show();
@@ -263,13 +285,18 @@ function foodCollisionHandler (player, item) {
 }
 
 function toolsCollisionHandler (player, item) {
-	playerStatus.hasTool = true;
 	item.kill();
-	//handgun = game.add.sprite(10, -5, 'handgun');
+
+	playerStatus.pickUpItem(item); ////////////////////////////////////////////////////////////////////////////
+	/*	
+	,pickUp: function(player, item) {
+		
+	playerStatus.hasTool = true;
 	handWeapon = game.add.sprite(10, -5, 'handWeapon');
-	//player.addChild(handgun);
 	player.addChild(handWeapon);
 	player.frame = 5;
+	}
+	*/
 }
 
 function update() {
@@ -308,7 +335,7 @@ function update() {
 					},
 					arsenal.selectedWeapon.iReloadMs
 				);
-				handWeaponSound.play();
+				arsenal.selectedWeapon.sound.play();
 			}		
 		}
 	} else if (game.input.activePointer.isDown) {
@@ -321,7 +348,22 @@ function update() {
 
 var playerStatus = {
 	hasTool: false, // Does player have any tool in hand?
-	isReloading: false // Are we reloading next bullet?
+	isReloading: false, // Are we reloading next bullet?
+	toolInHand: null,
+	pickUpItem: function(item) {
+		arsenal.selectedWeapon = arsenal[item.key];
+		weapon.fireRate = arsenal.selectedWeapon.iReloadMs;
+		weapon.bulletSpeed = arsenal.selectedWeapon.bulletSpeed;
+	    weapon.bulletAngleVariance = arsenal.selectedWeapon.bulletAngleVariance; // Spray bullets a bit.
+		this.hasTool = true;
+		toolInHand = arsenal.selectedWeapon;
+		var handWeapon = game.add.sprite(20, -5, item.key);
+		player.addChild(handWeapon);
+		player.frame = 5;
+		bulletSpritesheet.frame = arsenal.selectedWeapon.ixBulletSprite;
+		//d ebugger;
+	}
+
 }
 
 function render () {
