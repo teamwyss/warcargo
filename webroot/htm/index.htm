@@ -114,8 +114,8 @@ function preload() {
 	document.title = "WarCargo " + VERSION;
 
 	game.load.tilemap('level1', '../data/level1.json', null, Phaser.Tilemap.TILED_JSON);
-	//game.load.image('tiles-1', '../img/tiles-1.png');
-	game.load.image('tiles-1', '../img/sprite.tiles.svg');
+	game.load.image('tiles-1', '../img/tiles-1.png');
+	//game.load.image('tiles-1', '../img/sprite.tiles.svg');
 	game.load.spritesheet('player', '../img/spritePlayer.svg', 80, 80);
 	game.load.image('bgGrass', '../img/bgGrass.png');
 	game.load.image('bgWater','../img/bgWater.png');
@@ -320,7 +320,7 @@ function update() {
 					function() {
 						playerStatus.isReloading = false;
 					},
-					playerStatus.selectedWeapon.iReloadMs;
+					playerStatus.selectedWeapon.iReloadMs
 				);
 				playerStatus.selectedWeapon.sound.play();
 			}		
