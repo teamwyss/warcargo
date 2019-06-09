@@ -106,6 +106,25 @@ var arsenal = {
 		bulletAngleVariance: 0,
 		bulletSpeed: 1000,
 		wepp:null
+	},
+	init: function(theGame) {
+		for (sWepKey in arsenal) {
+			var sWepKeyUp = sWepKey.substring(0,1).toUpperCase() + sWepKey.substring(1);
+			arsenal[sWepKey].wepp = theGame.plugins.add(Phaser.Weapon);
+			arsenal[sWepKey].wepp.createBullets(100, sWepKey + 'Bullet');
+		    // The bullet will be automatically killed when it leaves the world bounds
+		    arsenal[sWepKey].wepp.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+			// The speed at which the bullet is fired
+			arsenal[sWepKey].wepp.bulletSpeed = arsenal[sWepKey].bulletSpeed;
+			// Weapon tracks the 'player' with offsets relative to player.
+			// The 'true' argument tells the weapon to track sprite rotation
+			arsenal[sWepKey].wepp.trackSprite(player, 50, 0, true);
+			//  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
+			arsenal[sWepKey].wepp.fireRate = arsenal[sWepKey].iReloadMs;
+			arsenal[sWepKey].wepp.bulletAngleVariance = arsenal[sWepKey].bulletAngleVariance; // Spray bullets a bit.
+			// Sound
+			arsenal[sWepKey].sound = game.add.audio(sWepKey + 'Sound');
+		}
 	}
 }
 
@@ -225,23 +244,7 @@ function create() {
 	// TODO reallocate:: spaceBar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 	// Weapon stuff Start -------------------------------------------------------
-	for (sWepKey in arsenal) {
-		var sWepKeyUp = sWepKey.substring(0,1).toUpperCase() + sWepKey.substring(1);
-		arsenal[sWepKey].wepp = this.game.plugins.add(Phaser.Weapon);
-		arsenal[sWepKey].wepp.createBullets(100, sWepKey + 'Bullet');
-	    // The bullet will be automatically killed when it leaves the world bounds
-	    arsenal[sWepKey].wepp.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-		// The speed at which the bullet is fired
-		arsenal[sWepKey].wepp.bulletSpeed = arsenal[sWepKey].bulletSpeed;
-		// Weapon tracks the 'player' with offsets relative to player.
-		// The 'true' argument tells the weapon to track sprite rotation
-		arsenal[sWepKey].wepp.trackSprite(player, 50, 0, true);
-		//  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
-		arsenal[sWepKey].wepp.fireRate = arsenal[sWepKey].iReloadMs;
-		arsenal[sWepKey].wepp.bulletAngleVariance = arsenal[sWepKey].bulletAngleVariance; // Spray bullets a bit.
-		// Sound
-		arsenal[sWepKey].sound = game.add.audio(sWepKey + 'Sound');
-	}
+	arsenal.init(this.game);
 
 	scoreboard.init(this);
 	mainMenu.init();
@@ -322,9 +325,6 @@ var playerStatus = {
 	isReloading: false, // Are we reloading next bullet?
 	pickUpItem: function(item) {
 		playerStatus.selectedWeapon = arsenal[item.key];
-		arsenal.revolver.wepp.fireRate = playerStatus.selectedWeapon.iReloadMs;
-		arsenal.revolver.wepp.bulletSpeed = playerStatus.selectedWeapon.bulletSpeed;
-	    arsenal.revolver.wepp.bulletAngleVariance = playerStatus.selectedWeapon.bulletAngleVariance; // Spray bullets a bit.
 		this.hasTool = true;
 		var handWeapon = game.add.sprite(20, -5, item.key);
 		player.addChild(handWeapon);
