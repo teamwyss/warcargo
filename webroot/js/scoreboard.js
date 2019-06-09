@@ -59,7 +59,7 @@ var scoreboard = {
 		this.healthGuage.refresh();
 		this.healthGuage.afterRefresh = function(){
 			// Change color depending on health.
-			var sColor = util.graphics.percentToColor(scoreboard.health.count);
+			var sColor = util.maths.graphics.percentToColor(scoreboard.health.count);
 			scoreboard.healthGuage.uiFuel.style.backgroundColor = sColor;
 		};
 		
