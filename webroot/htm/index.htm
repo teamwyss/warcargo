@@ -90,7 +90,7 @@ var game = new Phaser.Game(wc.window.w, wc.window.h, Phaser.CANVAS, 'game-canvas
 
 var arsenal = {
 	revolver: {
-		imageFile: "tool.revolver.svg",
+		toolImageFile: "tool.revolver.svg",
 		bulletFile: "tool.bullet.revolver.svg", // Change to sprite, set ix here.
 		soundFile: "tools.explosion.mp3",
 		iReloadMs: 400, // Time in miliseconds between shots.
@@ -99,8 +99,8 @@ var arsenal = {
 		wepp:null
 	},
 	laser: {
-		imageFile: "tool.laser.svg",
-		bulletFile: "tool.bullet.laser.svg",
+		toolImageFile: "tool.laser.svg",
+		bulletImageFile: "tool.bullet.laser.svg",
 		soundFile: "tools.blaster.mp3",
 		iReloadMs: 200, // Time in miliseconds between shots.
 		bulletAngleVariance: 0,
@@ -108,22 +108,30 @@ var arsenal = {
 		wepp:null
 	},
 	init: function(theGame) {
-		for (sWepKey in arsenal) {
-			var sWepKeyUp = sWepKey.substring(0,1).toUpperCase() + sWepKey.substring(1);
-			arsenal[sWepKey].wepp = theGame.plugins.add(Phaser.Weapon);
-			arsenal[sWepKey].wepp.createBullets(100, sWepKey + 'Bullet');
+		for (sWeaponKey in arsenal) {
+			var weaponTemp = arsenal[sWeaponKey];
+			weaponTemp.wepp = theGame.plugins.add(Phaser.Weapon);
+			weaponTemp.wepp.createBullets(100, sWeaponKey + 'Bullet');
 		    // The bullet will be automatically killed when it leaves the world bounds
-		    arsenal[sWepKey].wepp.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+		    weaponTemp.wepp.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 			// The speed at which the bullet is fired
-			arsenal[sWepKey].wepp.bulletSpeed = arsenal[sWepKey].bulletSpeed;
+			weaponTemp.wepp.bulletSpeed = weaponTemp.bulletSpeed;
 			// Weapon tracks the 'player' with offsets relative to player.
 			// The 'true' argument tells the weapon to track sprite rotation
-			arsenal[sWepKey].wepp.trackSprite(player, 50, 0, true);
+			weaponTemp.wepp.trackSprite(player, 50, 0, true);
 			//  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
-			arsenal[sWepKey].wepp.fireRate = arsenal[sWepKey].iReloadMs;
-			arsenal[sWepKey].wepp.bulletAngleVariance = arsenal[sWepKey].bulletAngleVariance; // Spray bullets a bit.
+			weaponTemp.wepp.fireRate = weaponTemp.iReloadMs;
+			weaponTemp.wepp.bulletAngleVariance = weaponTemp.bulletAngleVariance; // Spray bullets a bit.
 			// Sound
-			arsenal[sWepKey].sound = game.add.audio(sWepKey + 'Sound');
+			weaponTemp.sound = game.add.audio(sWepKey + 'Sound');
+		}
+	},
+	preload: function() {
+		for (sWeaponKey in arsenal) {
+			var weaponTemp = arsenal[sWeaponKey];
+			game.load.image(sWeaponKey, '../img/' + weaponTemp.toolImageFile)
+		    game.load.image(sWeaponKey + 'Bullet', '../img/' + weaponTemp.bulletImageFile);
+		    game.load.audio(sWeaponKey + 'Sound', '../snd/' + weaponTemp.soundFile);
 		}
 	}
 }
@@ -141,13 +149,15 @@ function preload() {
 	game.load.image('wood', '../img/food.wood.svg');
 
 	// Weapon
-	game.load.image('revolver', '../img/' + arsenal.revolver.imageFile)
-    game.load.image('revolverBullet', '../img/' + arsenal.revolver.bulletFile);
+	arsenal.preload();
+	/*
+	game.load.image('revolver', '../img/' + arsenal.revolver.toolImageFile)
+    game.load.image('revolverBullet', '../img/' + arsenal.revolver.bulletImageFile);
     game.load.audio('revolverSound', '../snd/' + arsenal.revolver.soundFile);
-	game.load.image('laser', '../img/' + arsenal.laser.imageFile)
-    game.load.image('laserBullet', '../img/' + arsenal.laser.bulletFile);
+	game.load.image('laser', '../img/' + arsenal.laser.toolImageFile)
+    game.load.image('laserBullet', '../img/' + arsenal.laser.bulletImageFile);
     game.load.audio('laserSound', '../snd/' + arsenal.laser.soundFile);
-
+	*/
 	// Scoreboard
 	game.load.image('bgScoreboard', '../img/bgScoreboard.png');
 
