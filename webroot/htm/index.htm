@@ -89,27 +89,29 @@ var wc = {
 var game = new Phaser.Game(wc.window.w, wc.window.h, Phaser.CANVAS, 'game-canvass', { preload: preload, create: create, update: update, render: render });
 
 var arsenal = {
-	revolver: {
-		toolImageFile: "tool.revolver.svg",
-		bulletFile: "tool.bullet.revolver.svg", // Change to sprite, set ix here.
-		soundFile: "tools.explosion.mp3",
-		iReloadMs: 400, // Time in miliseconds between shots.
-		bulletAngleVariance: 5,
-		bulletSpeed: 500,
-		wepp:null
-	},
-	laser: {
-		toolImageFile: "tool.laser.svg",
-		bulletImageFile: "tool.bullet.laser.svg",
-		soundFile: "tools.blaster.mp3",
-		iReloadMs: 200, // Time in miliseconds between shots.
-		bulletAngleVariance: 0,
-		bulletSpeed: 1000,
-		wepp:null
+	rack: {
+		revolver: {
+			toolImageFile: "tool.revolver.svg",
+			bulletImageFile: "tool.bullet.revolver.svg", // Change to sprite, set ix here.
+			soundFile: "tools.explosion.mp3",
+			iReloadMs: 400, // Time in miliseconds between shots.
+			bulletAngleVariance: 5,
+			bulletSpeed: 500,
+			wepp:null
+		},
+		laser: {
+			toolImageFile: "tool.laser.svg",
+			bulletImageFile: "tool.bullet.laser.svg",
+			soundFile: "tools.blaster.mp3",
+			iReloadMs: 200, // Time in miliseconds between shots.
+			bulletAngleVariance: 0,
+			bulletSpeed: 1000,
+			wepp:null
+		}
 	},
 	init: function(theGame) {
-		for (sWeaponKey in arsenal) {
-			var weaponTemp = arsenal[sWeaponKey];
+		for (var sWeaponKey in arsenal.rack) {
+			var weaponTemp = arsenal.rack[sWeaponKey];
 			weaponTemp.wepp = theGame.plugins.add(Phaser.Weapon);
 			weaponTemp.wepp.createBullets(100, sWeaponKey + 'Bullet');
 		    // The bullet will be automatically killed when it leaves the world bounds
@@ -123,12 +125,12 @@ var arsenal = {
 			weaponTemp.wepp.fireRate = weaponTemp.iReloadMs;
 			weaponTemp.wepp.bulletAngleVariance = weaponTemp.bulletAngleVariance; // Spray bullets a bit.
 			// Sound
-			weaponTemp.sound = game.add.audio(sWepKey + 'Sound');
+			weaponTemp.sound = game.add.audio(sWeaponKey + 'Sound');
 		}
 	},
-	preload: function() {
-		for (sWeaponKey in arsenal) {
-			var weaponTemp = arsenal[sWeaponKey];
+	preloadWeapons: function() {
+		for (sWeaponKey in arsenal.rack) {
+			var weaponTemp = arsenal.rack[sWeaponKey];
 			game.load.image(sWeaponKey, '../img/' + weaponTemp.toolImageFile)
 		    game.load.image(sWeaponKey + 'Bullet', '../img/' + weaponTemp.bulletImageFile);
 		    game.load.audio(sWeaponKey + 'Sound', '../snd/' + weaponTemp.soundFile);
@@ -148,16 +150,9 @@ function preload() {
 	game.load.image('bacon', '../img/food.bacon.svg');
 	game.load.image('wood', '../img/food.wood.svg');
 
-	// Weapon
-	arsenal.preload();
-	/*
-	game.load.image('revolver', '../img/' + arsenal.revolver.toolImageFile)
-    game.load.image('revolverBullet', '../img/' + arsenal.revolver.bulletImageFile);
-    game.load.audio('revolverSound', '../snd/' + arsenal.revolver.soundFile);
-	game.load.image('laser', '../img/' + arsenal.laser.toolImageFile)
-    game.load.image('laserBullet', '../img/' + arsenal.laser.bulletImageFile);
-    game.load.audio('laserSound', '../snd/' + arsenal.laser.soundFile);
-	*/
+	// Weapons
+	arsenal.preloadWeapons();
+
 	// Scoreboard
 	game.load.image('bgScoreboard', '../img/bgScoreboard.png');
 
@@ -334,7 +329,7 @@ var playerStatus = {
 	hasTool: false, // Does player have any tool in hand?
 	isReloading: false, // Are we reloading next bullet?
 	pickUpItem: function(item) {
-		playerStatus.selectedWeapon = arsenal[item.key];
+		playerStatus.selectedWeapon = arsenal.rack[item.key];
 		this.hasTool = true;
 		var handWeapon = game.add.sprite(20, -5, item.key);
 		player.addChild(handWeapon);
@@ -342,7 +337,7 @@ var playerStatus = {
 	}
 
 }
-playerStatus.selectedWeapon = arsenal.laser;
+playerStatus.selectedWeapon = arsenal.rack.laser;
 
 function render () {
 	var isDebug = false;
