@@ -146,7 +146,7 @@ function preload() {
 	game.load.image('tiles-1', '../img/tiles-1.png');
 	game.load.spritesheet('player', '../img/spritePlayer.svg', 80, 80);
 	game.load.image('bgGrass', '../img/bgGrass.png');
-	game.load.image('bgWater','../img/bgWater.png');
+	game.load.image('bgWater', '../img/bgWater.png');
 	game.load.image('bacon', '../img/food.bacon.svg');
 	game.load.image('wood', '../img/food.wood.svg');
 
@@ -240,7 +240,7 @@ function create() {
 
 	player.body.bounce.y = 0; // was 0.2
 	player.body.collideWorldBounds = true;
-	player.body.setSize(40, 40, 20, 20);
+	player.body.setSize(30, 30, 17, 22);
 
 	player.animations.add('act', [0, 1, 2, 3], 10, true);
 	game.camera.follow(player);
