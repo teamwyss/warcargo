@@ -63,11 +63,71 @@ var scoreboard = {
 			scoreboard.healthGuage.uiFuel.style.backgroundColor = sColor;
 		};
 		
-		this.bacon = this.createNewSlot().init("#inventory-frame div#bacon", "bacon");
-		this.wood = this.createNewSlot().init("#inventory-frame div#wood", "wood");
-		
+		var aoSlots = [
+			{
+				id: "bacon",
+				label: "bacon",
+				iconFile: "food.bacon.svg"
+			},
+			{
+				id: "crate",
+				label: "crate",
+				iconFile: "food.crate.svg"
+			},
+			{
+				id: "wood",
+				label: "wood",
+				iconFile: "food.wood.svg"
+			}
+		];
+		var uiSlotParent = document.querySelector("#inventory-frame");
+		for (var iS = 0; iS < aoSlots.length; iS++) {
+			var oSlotTemp = aoSlots[iS];
+			this[oSlotTemp.id] = this.createNewSlot().init(uiSlotParent, oSlotTemp);
+		}
 		this.pointsGuage = this.createNewGuage().init("points", "#points-guage");
 		
+	},
+	createNewSlot: function() {
+		return {
+			id:null,
+			max:1000,
+			count:0,
+			ui:null, 
+			digit:null,
+			icon:null,
+			init: function(uiSlotParent, oSettings){
+				this.id = oSettings.id;
+				var uiOuter = util.ui.createElement(
+					uiSlotParent,
+					"div",
+					{"id": this.id, "class": "slot"}
+				);
+				this.icon = util.ui.createElement(
+					uiOuter,
+					"div",
+					{"class": "icon"}
+				);
+				this.digit = util.ui.createElement(
+					uiOuter,
+					"div",
+					{"class": "digit"}
+				);
+				this.icon.style.backgroundImage = "url('../img/" + oSettings.iconFile + "')";
+				this.icon.style.opacity = "0.3";
+				return this;
+			},
+			add: function(iChange){
+				this.count += (typeof iChange == "undefined") ? 1 : iChange;
+				this.count = util.maths.minMax(this.count, 0, this.max);
+				console.log("hello world " + this.count);
+				if (this.count > 0) {
+					this.icon.style.opacity = "1.0";
+				}
+				this.digit.innerHTML = this.count;
+				return this;
+			}
+		}
 	},
 	createNewStat: function() {
 		return {
@@ -118,35 +178,6 @@ var scoreboard = {
 				return this;
 			},
 			afterRefresh: function(){}
-		}
-	},
-	createNewSlot: function() {
-		return {
-			id:null,
-			max:1000,
-			count:0,
-			ui:null, 
-			digit:null,
-			icon:null,
-			init: function(xpath, name){
-				this.ui = document.querySelector(xpath);
-				this.id = name
-				this.digit = this.ui.querySelector(".digit");
-				this.icon = this.ui.querySelector(".icon");
-				this.icon.style.backgroundImage = "url('../img/food." + this.id + ".svg')";
-				this.icon.style.opacity = "0.3";
-				
-				return this;
-			},
-			add: function(iChange){
-				this.count += (typeof iChange == "undefined") ? 1 : iChange;
-				this.count = util.maths.minMax(this.count, 0, this.max);
-				if (this.count > 0) {
-					this.icon.style.opacity = "1.0";
-				}
-				this.digit.innerHTML = this.count;
-				return this;
-			}
 		}
 	},
 	resetAllScores: function() {

@@ -7,6 +7,7 @@
 <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui">
 <script src="../js/lib/util.js" type="text/javascript"></script>
 <script src="../js/lib/util.cookie.js" type="text/javascript"></script>
+<script src="../js/lib/util.ui.js" type="text/javascript"></script>
 <script src="../js/lib/util.cookie.object.js" type="text/javascript"></script>
 <script src="../js/lib/util.geometry.js" type="text/javascript"></script>
 <script src="../js/lib/util.maths.js" type="text/javascript"></script>
@@ -49,12 +50,7 @@ body {
 		</div>
 	</div>
 	<div id="pauseButton" onclick="mainMenu.show();">Pause</div>
-	<div id="inventory-frame">
-		<div id="bacon" class="slot"><div class="icon"></div><div class="digit"></div></div>
-		<div id="wood"  class="slot"><div class="icon"></div><div class="digit"></div></div>
-		<div id="stone" class="slot"><div class="icon"></div><div class="digit"></div></div>
-		<div id="bombs" class="slot"><div class="icon"></div><div class="digit"></div></div>
-	</div>
+	<div id="inventory-frame"></div>
 </div>
 <div id="mainMenu-bgScreen" style="display: block;"></div>
 <div id="mainMenu-frame" style="display: block;">
@@ -242,7 +238,7 @@ function create() {
 	player.body.collideWorldBounds = true;
 	player.body.setSize(30, 30, 17, 22);
 
-	player.animations.add('act', [0, 1, 2, 3], 10, true);
+	player.animations.add('act', [1, 2, 3, 0], 10, true);
 	game.camera.follow(player);
 
 	cursors = game.input.keyboard.createCursorKeys();
