@@ -66,17 +66,10 @@ var scoreboard = {
 		var aoSlots = [
 			{
 				id: "bacon",
-				label: "bacon",
 				iconFile: "food.bacon.svg"
 			},
 			{
-				id: "crate",
-				label: "crate",
-				iconFile: "food.crate.svg"
-			},
-			{
 				id: "wood",
-				label: "wood",
 				iconFile: "food.wood.svg"
 			}
 		];
