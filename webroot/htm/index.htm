@@ -272,10 +272,19 @@ function toolsCollisionHandler (player, item) {
 	playerStatus.pickUpItem(item);
 }
 
+function bulletsFoodCollisionHandler (bullet, item) {
+	item.kill();
+	bullet.kill();
+	//playerStatus.pickUpItem(item);
+}
+
 function update() {
 
-	/* Bacon */
+	/* Player v food */
 	game.physics.arcade.collide(player, food, foodCollisionHandler);
+
+	/* Bullet v food */
+	game.physics.arcade.collide(playerStatus.selectedWeapon.wepp.bullets, food, bulletsFoodCollisionHandler);
 
 	game.physics.arcade.collide(player, tools, toolsCollisionHandler);
 
