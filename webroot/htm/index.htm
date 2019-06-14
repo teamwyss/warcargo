@@ -145,6 +145,7 @@ function preload() {
 	game.load.image('bgWater', '../img/bgWater.png');
 	game.load.image('bacon', '../img/food.bacon.svg');
 	game.load.image('wood', '../img/food.wood.svg');
+	game.load.spritesheet('ogre', '../img/mob.ogre.sprite.png', 100, 100)
 
 	// Weapons
 	arsenal.preloadWeapons();
@@ -163,6 +164,7 @@ var tools;
 var jumpTimer = 0;
 var cursors;
 var bgGrass;
+var ogre;
 
 function create() {
 
@@ -230,9 +232,15 @@ function create() {
 	var laserToAdd = tools.create(game.world.centerX - 150, game.world.centerY, 'laser');
 	game.physics.enable(laserToAdd, Phaser.Physics.ARCADE);
 
+	/* Player */
 	player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
 	player.anchor.setTo(0.39, 0.5);
 	game.physics.enable(player, Phaser.Physics.ARCADE);
+
+	/* Ogre */
+	ogre = game.add.sprite(game.world.centerX + 300, game.world.centerY + 700, 'ogre');
+	ogre.anchor.setTo(0.39, 0.5);
+	game.physics.enable(ogre, Phaser.Physics.ARCADE);
 
 	player.body.bounce.y = 0; // was 0.2
 	player.body.collideWorldBounds = true;
@@ -278,6 +286,10 @@ function bulletsFoodCollisionHandler (bullet, item) {
 	//playerStatus.pickUpItem(item);
 }
 
+function playerOgreCollisionHandler (player, ogre) {
+	player.kill();
+}
+
 function update() {
 
 	/* Player v food */
@@ -285,7 +297,11 @@ function update() {
 
 	/* Bullet v food */
 	game.physics.arcade.collide(playerStatus.selectedWeapon.wepp.bullets, food, bulletsFoodCollisionHandler);
-
+	
+	/* Player v ogre */
+	game.physics.arcade.collide(player, ogre, playerOgreCollisionHandler);
+	
+	/* player v tool */
 	game.physics.arcade.collide(player, tools, toolsCollisionHandler);
 
 	game.physics.arcade.collide(player, layer);

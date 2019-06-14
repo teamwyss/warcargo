@@ -113,7 +113,6 @@ var scoreboard = {
 			add: function(iChange){
 				this.count += (typeof iChange == "undefined") ? 1 : iChange;
 				this.count = util.maths.minMax(this.count, 0, this.max);
-				console.log("hello world " + this.count);
 				if (this.count > 0) {
 					this.icon.style.opacity = "1.0";
 				}
