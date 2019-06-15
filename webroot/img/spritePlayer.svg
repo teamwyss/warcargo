@@ -2,23 +2,25 @@
 <!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="480px" height="80px" viewBox="0 0 480 80" enable-background="new 0 0 480 80" xml:space="preserve">
+	 width="560px" height="80px" viewBox="0 0 560 80" enable-background="new 0 0 560 80" xml:space="preserve">
 <g id="hands">
 	<g>
 		<ellipse fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="57.084" cy="18.648" rx="13.083" ry="11.647"/>
 		<ellipse fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="57.084" cy="60.872" rx="13.083" ry="11.646"/>
 		
-			<ellipse transform="matrix(-0.4204 -0.9073 0.9073 -0.4204 163.4045 145.5918)" fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="128.203" cy="20.605" rx="11.648" ry="13.083"/>
+			<ellipse transform="matrix(-0.9073 0.4204 -0.4204 -0.9073 253.191 -14.5852)" fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="128.203" cy="20.611" rx="13.083" ry="11.648"/>
 		
-			<ellipse transform="matrix(-0.4204 -0.9073 0.9073 -0.4204 153.8599 216.1144)" fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="145.955" cy="58.916" rx="11.646" ry="13.083"/>
+			<ellipse transform="matrix(-0.9073 0.4204 -0.4204 -0.9073 303.1556 51.0176)" fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="145.955" cy="58.921" rx="13.083" ry="11.646"/>
 		
-			<ellipse transform="matrix(0.395 -0.9187 0.9187 0.395 166.0945 292.913)" fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="305.437" cy="20.352" rx="11.647" ry="13.083"/>
+			<ellipse transform="matrix(-0.9187 -0.395 0.395 -0.9187 578.0062 159.6832)" fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="305.439" cy="20.347" rx="13.083" ry="11.647"/>
 		
-			<ellipse transform="matrix(0.395 -0.9187 0.9187 0.395 120.3461 301.0563)" fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="288.749" cy="59.156" rx="11.647" ry="13.085"/>
+			<ellipse transform="matrix(-0.9187 -0.395 0.395 -0.9187 530.6482 227.5505)" fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="288.749" cy="59.149" rx="13.085" ry="11.647"/>
 		<ellipse fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="217.084" cy="18.648" rx="13.083" ry="11.647"/>
 		<ellipse fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="217.084" cy="60.872" rx="13.083" ry="11.646"/>
 		<ellipse fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="377.084" cy="18.648" rx="13.083" ry="11.647"/>
 		<ellipse fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="377.084" cy="60.872" rx="13.083" ry="11.646"/>
+		<ellipse fill="#FF0000" stroke="#000000" stroke-miterlimit="10" cx="537.084" cy="18.648" rx="13.083" ry="11.647"/>
+		<ellipse fill="#FF0000" stroke="#000000" stroke-miterlimit="10" cx="537.084" cy="60.872" rx="13.083" ry="11.646"/>
 		<ellipse fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="463.084" cy="31.648" rx="13.083" ry="11.647"/>
 		<ellipse fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="457.084" cy="52.872" rx="13.083" ry="11.646"/>
 	</g>
@@ -31,6 +33,7 @@
 		<circle fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="271.833" cy="39.886" r="29.681"/>
 		<circle fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="351.833" cy="39.886" r="29.681"/>
 		<circle fill="#DFB599" stroke="#000000" stroke-miterlimit="10" cx="431.833" cy="39.886" r="29.681"/>
+		<circle fill="#FF0000" stroke="#000000" stroke-miterlimit="10" cx="511.833" cy="39.886" r="29.681"/>
 	</g>
 </g>
 </svg>

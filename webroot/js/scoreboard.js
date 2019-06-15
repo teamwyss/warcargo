@@ -46,13 +46,14 @@ var scoreboard = {
 		this.health.afterAdd = function(){
 			scoreboard.healthGuage.refresh();
 			if (scoreboard.health.count <= 0) {
+				gameController.endGame();
 				mainMenu.setMessage(
 					"u ded"
 					,"you died sucker!"
 					,"dead.png"
 				);
 				mainMenu.setPlayButtonText("PLAY AGAIN");
-				mainMenu.show();
+				//mainMenu.show();
 				scoreboard.resetAllScores();
 			}
 		}
