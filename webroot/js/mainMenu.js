@@ -1,4 +1,3 @@
-
 var mainMenu ={
 	ui: null
 	,uiBgScreen: null
