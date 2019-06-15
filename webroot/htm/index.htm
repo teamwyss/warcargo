@@ -287,7 +287,22 @@ function bulletsFoodCollisionHandler (bullet, item) {
 }
 
 function playerOgreCollisionHandler (player, ogre) {
-	player.kill();
+	if (!playerStatus.isJustGotHit) {
+		playerStatus.isJustGotHit = true;
+		scoreboard.health.add(-10);
+		setTimeout(
+			function(){
+				console.log("collision")
+				playerStatus.isJustGotHit = false;
+			},
+			enemyStatus.knockbackDurationMs
+		)
+	}
+}
+
+function bulletOgreCollisionHandler (ogre, bullet) {
+	ogre.kill();
+	bullet.kill();
 }
 
 function update() {
@@ -303,6 +318,9 @@ function update() {
 	
 	/* player v tool */
 	game.physics.arcade.collide(player, tools, toolsCollisionHandler);
+	
+	/* Bullet v ogre */
+	game.physics.arcade.collide(playerStatus.selectedWeapon.wepp.bullets, ogre, bulletOgreCollisionHandler);
 
 	game.physics.arcade.collide(player, layer);
 	player.rotation = game.physics.arcade.angleToPointer(player); // + 1.57;
@@ -343,12 +361,26 @@ function update() {
 		player.animations.stop();
 		player.frame = 0;
 	}
+
+	/* This makes the knoekback work. */
+	if (playerStatus.isJustGotHit) {
+		game.physics.arcade.moveToObject(player, ogre, enemyStatus.knockbackSpeed);
+	} else {
+		game.physics.arcade.moveToObject(ogre, player, enemyStatus.chaseSpeed)
+	}
+}
+
+var enemyStatus = {
+	knockbackDurationMs: 100,
+	chaseSpeed: 100,
+	knockbackSpeed: -200
 }
 
 var playerStatus = {
 	selectedWeapon: null,
 	hasTool: false, // Does player have any tool in hand?
 	isReloading: false, // Are we reloading next bullet?
+	isJustGotHit: false,
 	pickUpItem: function(item) {
 		playerStatus.selectedWeapon = arsenal.rack[item.key];
 		this.hasTool = true;
@@ -358,6 +390,7 @@ var playerStatus = {
 	}
 
 }
+
 playerStatus.selectedWeapon = arsenal.rack.laser;
 
 function render () {
