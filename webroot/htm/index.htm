@@ -85,10 +85,13 @@ var wc = {
 
 var game = new Phaser.Game(wc.window.w, wc.window.h, Phaser.CANVAS, 'game-canvas', {preload: preload, create: create, update: update, render: render });
 
+
 var arsenal = {
 	rack: {
+		// Note: ID is set in each on init().
 		revolver: {
 			toolImageFile: "tool.revolver.svg",
+			slotImageFile: "tool.revolver.icon.svg",
 			bulletImageFile: "tool.bullet.revolver.svg", // Change to sprite, set ix here.
 			soundFile: "tools.explosion.mp3",
 			iReloadMs: 400, // Time in miliseconds between shots.
@@ -98,6 +101,7 @@ var arsenal = {
 		},
 		laser: {
 			toolImageFile: "tool.laser.svg",
+			slotImageFile: "tool.laser.icon.svg",
 			bulletImageFile: "tool.bullet.laser.svg",
 			soundFile: "tools.blaster.mp3",
 			iReloadMs: 200, // Time in miliseconds between shots.
@@ -109,6 +113,7 @@ var arsenal = {
 	init: function(theGame) {
 		for (var sWeaponKey in arsenal.rack) {
 			var weaponTemp = arsenal.rack[sWeaponKey];
+			weaponTemp.id = sWeaponKey;
 			weaponTemp.wepp = theGame.plugins.add(Phaser.Weapon);
 			weaponTemp.wepp.createBullets(100, sWeaponKey + 'Bullet');
 		    // The bullet will be automatically killed when it leaves the world bounds
@@ -275,16 +280,23 @@ function foodCollisionHandler (player, item) {
 	if (item.key == "bacon") {
 		scoreboard.points.add(100);
 		scoreboard.points.add(100);
-		scoreboard.bacon.add();
+		scoreboard.slots.bacon.add();
 	} else {
 		scoreboard.health.add(10);
-		scoreboard.wood.add();
+		scoreboard.slots.wood.add();
 	}
 }
 
 function toolsCollisionHandler (player, item) {
 	item.kill();
-	playerStatus.pickUpItem(item);
+	var oWeaponInfo = arsenal.rack[item.key];
+	var oSlotNew = scoreboard.createNewSlot().init(oWeaponInfo);
+	oSlotNew.digit.style.display = "none";
+	oSlotNew.add();
+	oSlotNew.uiOuter.onclick = function() {
+		playerStatus.toggleOrPickUpItem(item.key);
+	};
+	playerStatus.pickUpItem(item.key);
 }
 
 function bulletsFoodCollisionHandler (bullet, item) {
@@ -391,12 +403,23 @@ var playerStatus = {
 	hasTool: false, // Does player have any tool in hand?
 	isReloading: false, // Are we reloading next bullet?
 	isJustGotHit: false,
-	pickUpItem: function(item) {
-		playerStatus.selectedWeapon = arsenal.rack[item.key];
+	pickUpItem: function(itemKey) {
+		playerStatus.selectedWeapon = arsenal.rack[itemKey];
 		this.hasTool = true;
-		var handWeapon = game.add.sprite(20, -5, item.key);
-		player.addChild(handWeapon);
+		var handWeapon = game.add.sprite(20, -5, itemKey);
+		player.weaponInHand = player.addChild(handWeapon);
 		player.frame = 5;
+	},
+	toggleOrPickUpItem: function(itemKey) {
+		debugger;
+		// Always put down currently selected weapon.
+		playerStatus.hasTool = false;
+		player.weaponInHand.kill();
+		player.frame = 0;
+		if (playerStatus.selectedWeapon.id != itemKey) {
+			// Clicked on different weapon. Pick it up.
+			playerStatus.pickUpItem(itemKey);
+		}
 	}
 
 }

@@ -4,9 +4,11 @@ var scoreboard = {
 	points: null,
 	level: null,
 	health: null,
-	bacon: null,
-	wood: null,
+	//bacon: null,
+	//wood: null,
+	slots: [], // Contains bacon and wood and other things like weapons.
 	guage: null,
+	uiSlotParent: null,
 
 	
 	init: function(game) {
@@ -64,20 +66,31 @@ var scoreboard = {
 			scoreboard.healthGuage.uiFuel.style.backgroundColor = sColor;
 		};
 		
-		var aoSlots = [
+		var aoDefaultSlots = [
 			{
 				id: "bacon",
-				iconFile: "food.bacon.svg"
+				slotImageFile: "food.bacon.svg"
 			},
 			{
 				id: "wood",
-				iconFile: "food.wood.svg"
+				slotImageFile: "food.wood.svg"
 			}
+			/*
+			,
+			{
+				id: "laser",
+				slotImageFile: "tool.laser.icon.svg"
+			},
+			{
+				id: "revolver",
+				slotImageFile: "tool.revolver.icon.svg"
+			}
+			*/
 		];
-		var uiSlotParent = document.querySelector("#inventory-frame");
-		for (var iS = 0; iS < aoSlots.length; iS++) {
-			var oSlotTemp = aoSlots[iS];
-			this[oSlotTemp.id] = this.createNewSlot().init(uiSlotParent, oSlotTemp);
+		this.uiSlotParent = document.querySelector("#inventory-frame");
+		for (var iS = 0; iS < aoDefaultSlots.length; iS++) {
+			var oSlotTemp = aoDefaultSlots[iS];
+			this.createNewSlot().init(oSlotTemp);
 		}
 		this.pointsGuage = this.createNewGuage().init("points", "#points-guage");
 		
@@ -87,28 +100,29 @@ var scoreboard = {
 			id:null,
 			max:1000,
 			count:0,
-			ui:null, 
+			uiOuter:null, 
 			digit:null,
 			icon:null,
-			init: function(uiSlotParent, oSettings){
+			init: function(oSettings){
 				this.id = oSettings.id;
-				var uiOuter = util.ui.createElement(
-					uiSlotParent,
+				this.uiOuter = util.ui.createElement(
+					scoreboard.uiSlotParent,
 					"div",
 					{"id": this.id, "class": "slot"}
 				);
 				this.icon = util.ui.createElement(
-					uiOuter,
+					this.uiOuter,
 					"div",
 					{"class": "icon"}
 				);
 				this.digit = util.ui.createElement(
-					uiOuter,
+					this.uiOuter,
 					"div",
 					{"class": "digit"}
 				);
-				this.icon.style.backgroundImage = "url('../img/" + oSettings.iconFile + "')";
+				this.icon.style.backgroundImage = "url('../img/" + oSettings.slotImageFile + "')";
 				this.icon.style.opacity = "0.3";
+				scoreboard.slots[this.id] = this;
 				return this;
 			},
 			add: function(iChange){
