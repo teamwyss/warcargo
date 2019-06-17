@@ -152,7 +152,7 @@ function preload() {
 	game.load.image('bacon', '../img/food.bacon.svg');
 	game.load.image('wood', '../img/food.wood.svg');
 	
-	if (Math.round((Math.random() * 10) % 10) == 0) {
+	if (Math.round((Math.random() * 10) % 4) == 0) {
 		game.load.spritesheet('ogre', '../img/mob.clown.sprite.svg', 80, 80)
 	} else {
 		game.load.spritesheet('ogre', '../img/mob.ogre.sprite.png', 100, 100)
@@ -296,7 +296,7 @@ function toolsCollisionHandler (player, item) {
 	oSlotNew.uiOuter.onclick = function() {
 		playerStatus.toggleOrPickUpItem(item.key);
 	};
-	playerStatus.pickUpItem(item.key);
+	playerStatus.toggleOrPickUpItem(item.key);
 }
 
 function bulletsFoodCollisionHandler (bullet, item) {
@@ -321,8 +321,18 @@ function playerOgreCollisionHandler (player, ogre) {
 }
 
 function bulletOgreCollisionHandler (ogre, bullet) {
-	ogre.kill();
+	enemyStatus.chaseSpeed  = 0;
+	ogre.frame = enemyStatus.frameDead;
+	setTimeout(
+		// This sets the sprite to the Dead frame for a second.
+		function() {
+			ogre.kill();
+			enemyStatus.chaseSpeed  = enemyStatus.chaseSpeedDefault;
+		},
+		1000
+	)
 	bullet.kill();
+	
 }
 
 function update() {
@@ -330,18 +340,19 @@ function update() {
 	/* Player v food */
 	game.physics.arcade.collide(player, food, foodCollisionHandler);
 
-	/* Bullet v food */
-	game.physics.arcade.collide(playerStatus.selectedWeapon.wepp.bullets, food, bulletsFoodCollisionHandler);
-	
 	/* Player v ogre */
 	game.physics.arcade.collide(player, ogre, playerOgreCollisionHandler);
 	
 	/* player v tool */
 	game.physics.arcade.collide(player, tools, toolsCollisionHandler);
-	
-	/* Bullet v ogre */
-	game.physics.arcade.collide(playerStatus.selectedWeapon.wepp.bullets, ogre, bulletOgreCollisionHandler);
 
+	if (playerStatus.hasTool) {
+		/* Bullet v food */
+		game.physics.arcade.collide(playerStatus.selectedWeapon.wepp.bullets, food, bulletsFoodCollisionHandler);
+		/* Bullet v ogre */
+		game.physics.arcade.collide(playerStatus.selectedWeapon.wepp.bullets, ogre, bulletOgreCollisionHandler);
+	}
+	
 	game.physics.arcade.collide(player, layer);
 	player.rotation = game.physics.arcade.angleToPointer(player); // + 1.57;
 
@@ -395,7 +406,8 @@ var enemyStatus = {
 	knockbackDurationMs: 100,
 	chaseSpeed: 0,
 	chaseSpeedDefault: 200,
-	knockbackSpeed: -400
+	knockbackSpeed: -400,
+	frameDead: 2
 }
 
 var playerStatus = {
@@ -411,20 +423,22 @@ var playerStatus = {
 		player.frame = 5;
 	},
 	toggleOrPickUpItem: function(itemKey) {
-		debugger;
-		// Always put down currently selected weapon.
-		playerStatus.hasTool = false;
-		player.weaponInHand.kill();
-		player.frame = 0;
-		if (playerStatus.selectedWeapon.id != itemKey) {
+		// Always put down currently selected weapon if he has one.
+		if (playerStatus.hasTool) {
+			playerStatus.hasTool = false;
+			player.weaponInHand.kill();
+			player.frame = 0;
+		}
+		if (
+			(playerStatus.selectedWeapon == null)
+			|| (playerStatus.selectedWeapon.id != itemKey)
+		) {
 			// Clicked on different weapon. Pick it up.
 			playerStatus.pickUpItem(itemKey);
 		}
 	}
 
 }
-
-playerStatus.selectedWeapon = arsenal.rack.laser;
 
 function render () {
 	var isDebug = false;
