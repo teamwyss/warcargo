@@ -152,7 +152,7 @@ function preload() {
 	game.load.image('bacon', '../img/food.bacon.svg');
 	game.load.image('wood', '../img/food.wood.svg');
 	
-	if (Math.round((Math.random() * 10) % 4) == 0) {
+	if (Math.random() <= 0.3333) {
 		game.load.spritesheet('ogre', '../img/mob.clown.sprite.svg', 80, 80)
 	} else {
 		game.load.spritesheet('ogre', '../img/mob.ogre.sprite.png', 100, 100)
