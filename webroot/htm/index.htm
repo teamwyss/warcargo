@@ -110,13 +110,6 @@ var arsenal = {
 			bulletAngleVariance: 0,
 			bulletSpeed: 1000,
 			wepp:null
-		},
-		bow: {
-			iReloadMs: 2000, // Time in miliseconds between shots.
-			bulletAngleVariance: 0,
-			bulletSpeed: 300,
-			wepp:null,
-			weaponGripOffset: xy(5, -30)
 		}
 	},
 	init: function(theGame) {
@@ -259,9 +252,6 @@ function create() {
 
 	var laserToAdd = tools.create(game.world.centerX - 150, game.world.centerY, 'laser');
 	game.physics.enable(laserToAdd, Phaser.Physics.ARCADE);
-
-	var bowToAdd = tools.create(game.world.centerX - 75, game.world.centerY, 'bow');
-	game.physics.enable(bowToAdd, Phaser.Physics.ARCADE);
 
 	/* Player */
 	player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
