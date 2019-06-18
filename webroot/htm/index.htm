@@ -88,26 +88,35 @@ var game = new Phaser.Game(wc.window.w, wc.window.h, Phaser.CANVAS, 'game-canvas
 
 var arsenal = {
 	rack: {
-		// Note: ID is set in each on init().
+		/* 
+		 * The following fields are created automatically on init().
+		 * ID: 				"KEY" (Set using rack.key.)
+		 * toolImageFile: 	"tool.KEY.svg"
+		 * slotImageFile: 	"tool.KEY.icon.svg"
+		 * bulletImageFile: "tool.KEY.bullet.svg"
+		 * soundFile: 		"tool.KEY.mp3"
+		 * wepp:			Created as an object by Phaser.
+		 * weaponGripOffset:This only gets set if not specified.
+		 * 					EG: weaponGripOffset: xy(5, -30)
+		 */
 		revolver: {
-			toolImageFile: "tool.revolver.svg",
-			slotImageFile: "tool.revolver.icon.svg",
-			bulletImageFile: "tool.bullet.revolver.svg", // Change to sprite, set ix here.
-			soundFile: "tools.explosion.mp3",
 			iReloadMs: 400, // Time in miliseconds between shots.
 			bulletAngleVariance: 5,
 			bulletSpeed: 500,
 			wepp:null
 		},
 		laser: {
-			toolImageFile: "tool.laser.svg",
-			slotImageFile: "tool.laser.icon.svg",
-			bulletImageFile: "tool.bullet.laser.svg",
-			soundFile: "tools.blaster.mp3",
 			iReloadMs: 200, // Time in miliseconds between shots.
 			bulletAngleVariance: 0,
 			bulletSpeed: 1000,
 			wepp:null
+		},
+		bow: {
+			iReloadMs: 2000, // Time in miliseconds between shots.
+			bulletAngleVariance: 0,
+			bulletSpeed: 300,
+			wepp:null,
+			weaponGripOffset: xy(5, -30)
 		}
 	},
 	init: function(theGame) {
@@ -133,6 +142,14 @@ var arsenal = {
 	preloadWeapons: function() {
 		for (sWeaponKey in arsenal.rack) {
 			var weaponTemp = arsenal.rack[sWeaponKey];
+			
+			/* Fill in some code-by-convention fields. */
+			weaponTemp.toolImageFile = "tool." + sWeaponKey + ".svg",
+			weaponTemp.slotImageFile = "tool." + sWeaponKey + ".icon.svg",
+			weaponTemp.bulletImageFile = "tool." + sWeaponKey + ".bullet.svg",
+			weaponTemp.soundFile = "tool." + sWeaponKey + ".mp3",
+			weaponTemp.weaponGripOffset = util.getSafe(weaponTemp.weaponGripOffset, xy(0,0));
+
 			game.load.image(sWeaponKey, '../img/' + weaponTemp.toolImageFile)
 		    game.load.image(sWeaponKey + 'Bullet', '../img/' + weaponTemp.bulletImageFile);
 		    game.load.audio(sWeaponKey + 'Sound', '../snd/' + weaponTemp.soundFile);
@@ -242,6 +259,9 @@ function create() {
 
 	var laserToAdd = tools.create(game.world.centerX - 150, game.world.centerY, 'laser');
 	game.physics.enable(laserToAdd, Phaser.Physics.ARCADE);
+
+	var bowToAdd = tools.create(game.world.centerX - 75, game.world.centerY, 'bow');
+	game.physics.enable(bowToAdd, Phaser.Physics.ARCADE);
 
 	/* Player */
 	player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
@@ -418,7 +438,11 @@ var playerStatus = {
 	pickUpItem: function(itemKey) {
 		playerStatus.selectedWeapon = arsenal.rack[itemKey];
 		this.hasTool = true;
-		var handWeapon = game.add.sprite(20, -5, itemKey);
+		var handWeapon = game.add.sprite(
+			20 + playerStatus.selectedWeapon.weaponGripOffset.x,
+			-5 + playerStatus.selectedWeapon.weaponGripOffset.y,
+			itemKey
+		);
 		player.weaponInHand = player.addChild(handWeapon);
 		player.frame = 5;
 	},
