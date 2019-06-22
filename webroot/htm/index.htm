@@ -112,11 +112,13 @@ var arsenal = {
 			wepp:null
 		},
 		bow: {
-			iReloadMs: 200, // Time in miliseconds between shots.
+			iReloadMs: 0, // Time in miliseconds between shots.
 			bulletAngleVariance: 3,
 			bulletSpeed: 500,
 			weaponGripOffset: xy(5, -30),
 			spriteFrame: 7,
+			chargeEmpty: 30,
+			chargeFull: 10,
 			wepp:null
 		}
 	},
@@ -155,6 +157,12 @@ var arsenal = {
 		    game.load.image(sWeaponKey + 'Bullet', '../img/' + weaponTemp.bulletImageFile);
 		    game.load.audio(sWeaponKey + 'Sound', '../snd/' + weaponTemp.soundFile);
 		}
+	},
+	convertPcToArrowCharge: function(iPc) {
+		var b = arsenal.rack.bow
+		var iRangePx = b.chargeEmpty - b.chargeFull;
+		var fMovePx = iRangePx * iPc / 100
+		return b.chargeEmpty - fMovePx;
 	}
 }
 
@@ -396,11 +404,24 @@ function update() {
 	if (playerStatus.hasTool) {
 		if (playerStatus.selectedWeapon.id == "bow"){
 			if (game.input.activePointer.isDown) {
-				iWeaponChargePc++;
-				console.log(iWeaponChargePc);
+				if (iWeaponChargePc == 0) {
+					var handBullet = game.add.sprite(
+						28,
+						-5,
+						'bowBullet'
+					);
+					player.bulletInHand = player.addChild(handBullet);
+					iWeaponChargePc++;
+				} else if (iWeaponChargePc < 100) {
+					iWeaponChargePc++;
+				}
+				player.bulletInHand.position.x = arsenal.convertPcToArrowCharge(iWeaponChargePc);
 				
 			} else {
 				// mouse not down
+				if (iWeaponChargePc > 0) {
+					player.bulletInHand.kill();
+				}
 				//if the weapon charge percent is greater than 50:
 				if (iWeaponChargePc > 50) {
 					playerStatus.selectedWeapon.wepp.fire();
@@ -464,14 +485,7 @@ var playerStatus = {
 			itemKey
 		);
 		player.weaponInHand = player.addChild(handWeapon);
-		//if (itemKey == "bow") {
-		//	player.frame = 7;
-		//} else {
-		//	player.frame = 5;
-		//}
 		player.frame = playerStatus.selectedWeapon.spriteFrame;
-		
-		
 	},
 	toggleOrPickUpItem: function(itemKey) {
 		// Always put down currently selected weapon if he has one.
