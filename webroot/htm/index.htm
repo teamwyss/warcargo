@@ -112,7 +112,7 @@ var arsenal = {
 			wepp:null
 		},
 		bow: {
-			iReloadMs: 500, // Time in miliseconds between shots.
+			iReloadMs: 200, // Time in miliseconds between shots.
 			bulletAngleVariance: 3,
 			bulletSpeed: 500,
 			weaponGripOffset: xy(5, -30),
@@ -278,7 +278,7 @@ function create() {
 	player.body.collideWorldBounds = true;
 	player.body.setSize(30, 30, 17, 22);
 
-	player.animations.add('act', [1, 2, 3, 0], 10, true);
+	player.animations.add('act', [1, 2, 2, 3, 0, 0], 10, true);
 	game.camera.follow(player);
 
 	cursors = game.input.keyboard.createCursorKeys();
@@ -333,7 +333,9 @@ function playerOgreCollisionHandler (player, ogre) {
 		scoreboard.health.add(-10);
 		setTimeout(
 			function(){
-				player.frame = playerStatus.selectedWeapon.spriteFrame;
+				if (playerStatus.hasTool) {
+					player.frame = playerStatus.selectedWeapon.spriteFrame;
+				}
 				playerStatus.isJustGotHit = false;
 			},
 			enemyStatus.knockbackDurationMs
