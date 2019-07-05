@@ -9,7 +9,7 @@ pixel {
 	height: 32px;
 	background-color: #ddeedd;
 	display: inline-block;
-	background-image:url('../img/tiles-1.png?wikiid=truuu');
+	background-image:url('../img/tiles-ground.png?wikiid=truuu');
 	background-repeat: no-repeat;
 	background-position: 0px 0px;
 	background-size: 288px auto;
@@ -32,7 +32,7 @@ div#palette pixel.selected {
 <script type="text/javascript">
 
 var data;
-$.getJSON('level1.json',function(jsonData){
+$.getJSON('levelGround.json',function(jsonData){
 	console.log(jsonData);
 	//d ebugger;
 	data = jsonData.layers[0].data;
@@ -60,7 +60,7 @@ for (; iGL < gl.length; iGL++) {
 var dim = {
 	cols: 9 // In main sprite, how many cols.
 	,rows: 3 // How many rows.
-	,pixXY: 32 // Size of each image rendered in map.
+	,pixXY: 32 // Size of each image rendered in mapGround.
 };
 function decorateImg(iCounterXY, ixInsideSprite, isPalette) {
 	var sClick = " onclick=\"swap(this, " + iCounterXY 

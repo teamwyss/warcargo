@@ -128,8 +128,8 @@ var arsenal = {
 			weaponTemp.id = sWeaponKey;
 			weaponTemp.wepp = theGame.plugins.add(Phaser.Weapon);
 			weaponTemp.wepp.createBullets(100, sWeaponKey + 'Bullet');
-		    // The bullet will be automatically killed when it leaves the world bounds
-		    weaponTemp.wepp.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+			// The bullet will be automatically killed when it leaves the world bounds
+			weaponTemp.wepp.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
 			// The speed at which the bullet is fired
 			weaponTemp.wepp.bulletSpeed = weaponTemp.bulletSpeed;
 			// Weapon tracks the 'player' with offsets relative to player.
@@ -154,8 +154,8 @@ var arsenal = {
 			weaponTemp.spriteFrame = util.getSafe(weaponTemp.spriteFrame, 5);
 
 			game.load.image(sWeaponKey, '../img/' + weaponTemp.toolImageFile)
-		    game.load.image(sWeaponKey + 'Bullet', '../img/' + weaponTemp.bulletImageFile);
-		    game.load.audio(sWeaponKey + 'Sound', '../snd/' + weaponTemp.soundFile);
+			game.load.image(sWeaponKey + 'Bullet', '../img/' + weaponTemp.bulletImageFile);
+			game.load.audio(sWeaponKey + 'Sound', '../snd/' + weaponTemp.soundFile);
 		}
 	},
 	convertPcToArrowCharge: function(iPc) {
@@ -170,8 +170,10 @@ function preload() {
 
 	document.title = "WarCargo " + VERSION;
 
-	game.load.tilemap('level1', '../data/level1.json', null, Phaser.Tilemap.TILED_JSON);
-	game.load.image('tiles-1', '../img/tiles-1.png');
+	game.load.tilemap('levelGround', '../data/levelGround.json', null, Phaser.Tilemap.TILED_JSON);
+	game.load.image('tiles-ground', '../img/tiles-ground.png');
+	game.load.tilemap('levelSky', '../data/levelSky.json', null, Phaser.Tilemap.TILED_JSON);
+	game.load.image('tiles-sky', '../img/tiles-sky.png');
 	game.load.spritesheet('player', '../img/mob.player.sprite.svg', 80, 80);
 	game.load.image('bgGrass', '../img/bgGrass.png');
 	game.load.image('bgWater', '../img/bgWater.png');
@@ -192,9 +194,11 @@ function preload() {
 
 }
 
-var map;
+var mapGround;
+var mapSky;
 var tileset;
-var layer;
+var layerGround;
+var layerSky;
 var player;
 var food;
 var tools;
@@ -216,18 +220,20 @@ function create() {
 	bgGrass = game.add.tileSprite(0, 0, iBgW, iBgH, 'bgGrass');
 	bgGrass.fixedToCamera = false;
 
-	map = game.add.tilemap('level1');
-
-	map.addTilesetImage('tiles-1');
-
-	map.setCollisionByExclusion([ 1, 2, 3, 7, 8, 9, 10, 11, 12, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27]);
-
-	layer = map.createLayer('Tile Layer 1');
-
+	// Maps and layers #########################################
+	// Map Ground
+	mapGround = game.add.tilemap('levelGround');
+	mapGround.addTilesetImage('tiles-ground');
+	mapGround.setCollisionByExclusion([ 1, 2, 3, 7, 8, 9, 10, 11, 12, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27]);
+	layerGround = mapGround.createLayer('Tile Layer Ground');
 	// Un-comment this on to see the collision tiles.
-	//layer.debug = true;
+	//layerGround.debug = true;
+	
+	// Un-comment this on to see the collision tiles.
+	//layerSky.debug = true;
 
-	layer.resizeWorld();
+	layerGround.resizeWorld();
+	// End maps and layers #########################################
 
 	/*
 	Add Bacon
@@ -298,7 +304,16 @@ function create() {
 	scoreboard.init(this);
 	mainMenu.init();
 	gameController.pauseGame();
-
+	
+	// Map Sky
+	mapSky = game.add.tilemap('levelSky');
+	mapSky.addTilesetImage('tiles-sky');
+	//mapSky.setCollisionByExclusion([ 1, 2, 3, 7, 8, 9, 10, 11, 12, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27]);
+	layerSky = mapSky.createLayer('Tile Layer Sky');
+	//layerSky.scrollFactorX = 1.05;
+	//layerSky.scrollFactorY = 1.05;
+	//layerSky.alpha = 0.5
+	
 }
 
 /**
@@ -384,7 +399,7 @@ function update() {
 		game.physics.arcade.collide(playerStatus.selectedWeapon.wepp.bullets, ogre, bulletOgreCollisionHandler);
 	}
 	
-	game.physics.arcade.collide(player, layer);
+	game.physics.arcade.collide(player, layerGround); // layerSky does not have a collision.
 	player.rotation = game.physics.arcade.angleToPointer(player); // + 1.57;
 
 	player.body.velocity.x = 0;

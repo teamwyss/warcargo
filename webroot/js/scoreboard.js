@@ -190,8 +190,8 @@ var scoreboard = {
 	resetAllScores: function() {
 		this.points.add(-1000);
 		this.level.add(-1000);
-		this.bacon.add(-1000);
-		this.wood.add(-1000);
+		this.slots.bacon.add(-1000);
+		this.slots.wood.add(-1000);
 		this.health.add(100);
 	}
 	
