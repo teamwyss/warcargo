@@ -377,7 +377,13 @@ function bulletOgreCollisionHandler (ogre, bullet) {
 	setTimeout(
 		// This sets the sprite to the Dead frame for a second.
 		function() {
-			ogre.kill();
+			if (scoreboard.ogres > 3) {
+				ogre.kill();
+			} else {
+				ogre.position = {x: 20, y: 20, type: 25};
+				ogre.frame = 1;
+				scoreboard.ogres++;
+			}
 			enemyStatus.chaseSpeed  = enemyStatus.chaseSpeedDefault;
 		},
 		1000
