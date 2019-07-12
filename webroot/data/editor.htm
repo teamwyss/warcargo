@@ -9,7 +9,8 @@ pixel {
 	height: 32px;
 	background-color: #ddeedd;
 	display: inline-block;
-	background-image:url('../img/tiles-ground.png?wikiid=truuu');
+	XXXbackground-image:url('../img/tiles-ground.png?wikiid=truuu');
+	background-image:url('../img/tiles-sky.png?wikiid=truuu');
 	background-repeat: no-repeat;
 	background-position: 0px 0px;
 	background-size: 288px auto;
@@ -27,12 +28,17 @@ div#palette pixel.selected {
     border: 3px solid red;
 }
 </style>
-<script type="text/javascript" src="levelDataOld.js"></script>
+<!--
+<script type="text/javascript" src="levelGround.js"></script>
+-->
+<script type="text/javascript" src="levelSky.js"></script>
 <script type="text/javascript" src="../js/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
 
+var sLevelToEdit = "Sky";
+
 var data;
-$.getJSON('levelGround.json',function(jsonData){
+$.getJSON('level' + sLevelToEdit + '.json',function(jsonData){
 	console.log(jsonData);
 	//d ebugger;
 	data = jsonData.layers[0].data;

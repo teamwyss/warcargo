@@ -227,7 +227,7 @@ function create() {
 	// Map Ground
 	mapGround = game.add.tilemap('levelGround');
 	mapGround.addTilesetImage('tiles-ground');
-	mapGround.setCollisionByExclusion([ 1, 2, 3, 7, 8, 9, 10, 11, 12, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27]);
+	mapGround.setCollisionByExclusion([1, 2, 3, 7, 8, 9, 10, 11, 12, 17, 18, 20, 21, 22, 23, 24, 25, 26, 27]);
 	layerGround = mapGround.createLayer('Tile Layer Ground');
 	// Un-comment this on to see the collision tiles.
 	//layerGround.debug = true;
@@ -293,7 +293,7 @@ function create() {
 
 	player.body.bounce.y = 0; // was 0.2
 	player.body.collideWorldBounds = true;
-	player.body.setSize(30, 30, 17, 22);
+	player.body.setSize(35, 35, 17, 22);
 
 	player.animations.add('act', [1, 2, 2, 3, 0, 0], 10, true);
 	game.camera.follow(player);
