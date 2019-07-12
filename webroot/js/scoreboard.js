@@ -4,6 +4,7 @@ var scoreboard = {
 	points: null,
 	level: null,
 	health: null,
+	ogres: 0,
 	//bacon: null,
 	//wood: null,
 	slots: [], // Contains bacon and wood and other things like weapons.

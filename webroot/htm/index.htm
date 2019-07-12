@@ -183,8 +183,10 @@ function preload() {
 	game.load.image('bacon', '../img/food.bacon.svg');
 	game.load.image('wood', '../img/food.wood.svg');
 	
-	if (Math.random() <= 0.3333) {
+	if (Math.random() <= 0.4) {
 		game.load.spritesheet('ogre', '../img/mob.clown.sprite.svg', 80, 80)
+	} else if (Math.random() <= 0.8) {
+		game.load.spritesheet('ogre', '../img/mob.wampa.sprite.svg', 80, 80)
 	} else {
 		game.load.spritesheet('ogre', '../img/mob.ogre.sprite.png', 100, 100)
 	}
@@ -375,7 +377,13 @@ function bulletOgreCollisionHandler (ogre, bullet) {
 	setTimeout(
 		// This sets the sprite to the Dead frame for a second.
 		function() {
-			ogre.kill();
+			if (scoreboard.ogres > 3) {
+				ogre.kill();
+			} else {
+				ogre.position = {x: 20, y: 20, type: 25};
+				ogre.frame = 1;
+				scoreboard.ogres++;
+			}
 			enemyStatus.chaseSpeed  = enemyStatus.chaseSpeedDefault;
 		},
 		1000
