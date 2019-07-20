@@ -18,7 +18,8 @@
 	height: 100%;
 }
 #mainMenu-frame .closeButton,
-#mainMenu-frame .playButton {
+#mainMenu-frame .playButton,
+#mainMenu-frame .playerNameLoginFieldWrapper {
 	cursor:	pointer;
 	position: absolute;
 	right: 5px;
@@ -31,7 +32,8 @@
 	font-size: 23px;
 	text-align: center;
 }
-#mainMenu-frame .playButton {
+#mainMenu-frame .playButton,
+#mainMenu-frame .playerNameLoginFieldWrapper {
 	top: auto;
 	bottom: 60px;
 	left: 0;
@@ -42,6 +44,25 @@
 	width: 150px;
 	padding: 20px;
 	border-radius: 8px;
+}
+#mainMenu-frame .playerNameLoginFieldWrapper {
+    bottom: 139px;
+    XXXbackground-color: darkred;
+    padding: 7px 1px 6px 1px;
+    font-size: 1px;
+    text-align: center;
+	width: 200px;
+}
+#mainMenu-frame .playerNameLoginFieldWrapper input {
+
+    text-align: center;
+	border: 1px dotted orange;
+	border: none;
+	font-size: 25px;
+	background-color: transparent;
+	color: white;
+	font-family: armalite;
+	width: 200px;
 }
 #appHeading {
 	font-family: armalite;

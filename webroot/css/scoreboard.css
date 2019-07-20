@@ -43,6 +43,10 @@ div#health-frame {
     top: 40px;
     position: relative;
 }
+div#players-frame {
+    top: 70px;
+    position: relative;
+}
 div#level-label,
 div#health-label {
     top: 0px;
