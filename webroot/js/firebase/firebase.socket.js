@@ -40,7 +40,8 @@ var firestoreUserData = {
 
 var firestoreManager = {
 	framesSinceLastSync: 0,
-	framesToBufferBeforeSync: 20,
+	framesToBufferBeforeSync: 0,
+	changeDict: {},
 	logMeIn: function(sName){
 		//debugger;
 		firestoreUserData.fbData.name = sName;
@@ -70,10 +71,9 @@ var firestoreManager = {
 		firestoreUserData.fbData.score = iScore;
 
 		if (
-				false 
-				&& (firestoreUserData.fbData.x == firestoreUserData.fbDataLastSync.x)
-				&& (firestoreUserData.fbData.y == firestoreUserData.fbDataLastSync.y)
-				&& (firestoreUserData.fbData.rotation == firestoreUserData.fbDataLastSync.rotation)
+			(firestoreUserData.fbData.x == firestoreUserData.fbDataLastSync.x)
+			&& (firestoreUserData.fbData.y == firestoreUserData.fbDataLastSync.y)
+			&& (firestoreUserData.fbData.rotation == firestoreUserData.fbDataLastSync.rotation)
 		) {
 			console.log("no changes to player pos.x:" + firestoreUserData.fbData.x)
 			return;
@@ -91,8 +91,22 @@ var firestoreManager = {
 		.catch(function(error) {
 			console.error("Error updating document: ", error);
 		});
+	},
+	getAllPlayersExceptMe: function() {
+		var oOut = {};
+		////////var aoFromDb = [];
+		debugger;
+		db.collection("players").get().then((querySnapshot) => {
+		    querySnapshot.forEach((doc) => {
+		    	//var dat = {fbId: doc.id, fbData: doc.data()};
+		        console.log(`getAllPlayersExceptMe : ${doc.id} => ${doc.data().name}`);
+		        //aoFromDb.push(dat)
+		        oOut[doc.id] = doc.data();
+		    });
+			//document.querySelector("#data").innerHTML = JSON.stringify(aoFromDb, null, 3);
+		});
+		return oOut;
 	}
-
 }
 
 /*
@@ -113,8 +127,35 @@ db.collection("players").onSnapshot(snapshot => {
 	// Updates only (shows all at the start)
 	let changes = snapshot.docChanges();
 	var sChanges = "<table id=\"playerChanges\">" + socketUiTools.tableHeader;
+	firestoreManager.changeDict = {};
+	
+	var FAKEPOS_change_doc_data_x = game.world.centerX;
+	var FAKEPOS_change_doc_data_y = game.world.centerY;
 	changes.forEach(change => {
-		console.log(change.doc.data());
+		console.log(change.doc.id + " -- " + change.doc.data().name);
+		if (
+			firestoreUserData.id == null
+			|| firestoreUserData.id != change.doc.id
+		) {
+			if (change.type == 'modified') {
+				firestoreManager.changeDict[change.doc.id] = change.doc.data();
+			} else if (change.type == 'added') {
+				FAKEPOS_change_doc_data_y += 100;
+				var otherPlayer = otherPlayers.create(FAKEPOS_change_doc_data_x, FAKEPOS_change_doc_data_y, 'ogre');
+				otherPlayer.anchor.setTo(0.39, 0.5);
+				otherPlayer.data.fbId = change.doc.id;
+				//debugger;
+				game.physics.enable(otherPlayer, Phaser.Physics.ARCADE);
+				firestoreManager.changeDict[change.doc.id] = change.doc.data();
+			} else if (change.type == 'removed') {
+				console.log("dsdfdsfdsfdsfs");
+				var oData = change.doc.data();
+				oData.kill = true;
+				debugger;
+				firestoreManager.changeDict[change.doc.id] = oData;
+			}
+		}
+		//debugger;
 		sChanges += socketUiTools.decorateUserRow(change.doc.id, change.doc.data());
 	});
 	sChanges += "</table>";

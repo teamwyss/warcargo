@@ -6,7 +6,7 @@ socketUiTools.decorateUserRow = function(docId, docData) {
 		+ "<td>" + docData.y + "</td>"
 		+ "<td>" + docData.rotation + "</td>"
 		+ "<td>" + docId + "</td>" 
-		+ "<td onclick=\"admin.deleteUser(\'" + docId + "\');\">button to kill </td>" 
+		+ "<td onclick=\"admin.deleteUser(\'" + docId + "\');\">X</td>" 
 		+ "</tr>";
 };
 
@@ -18,7 +18,6 @@ socketUiTools.tableHeader = "<tr id=\"header\"><td>name"
 	+ "<td>id</td>"
 	+ "<td>kill</td>"
 	+ "</tr>";
-
 
 var admin = {
 	deleteUser: function(idUser) {

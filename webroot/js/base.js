@@ -1,7 +1,7 @@
 
 var IDE_HOOK = false;
 var VERSION = '0.1.0';
-var isDebugAll = true;
+var isDebugAll = false;
 var isDisableEnemies = true;
 
 var wc = {
@@ -113,6 +113,7 @@ function preload() {
 	game.load.image('bgWater', '../img/bgWater.png');
 	game.load.image('bacon', '../img/food.bacon.svg');
 	game.load.image('wood', '../img/food.wood.svg');
+	game.load.spritesheet('ogre', '../img/mob.wampa.sprite.svg', 80, 80)
 	
 	// TODO Prefer to have this as an image. See if round hitbox still works.
 	//game.load.image('tree', '../img/prop.tree.png');
@@ -141,6 +142,7 @@ var tileset;
 var layerGround;
 var layerSky;
 var player;
+var otherPlayers;
 var food;
 var trees;
 var tools;
@@ -220,6 +222,15 @@ function create() {
 	var bowToAdd = tools.create(game.world.centerX - 100, game.world.centerY, 'bow');
 	game.physics.enable(bowToAdd, Phaser.Physics.ARCADE);
 
+	
+	/* 
+	 * This bit is very special.
+	 * Create the otherPlayer group, but they are not loaded straight away.
+	 * A call is made to fireBase, and when it returns, load others from the 
+	 * added list.
+	 */
+	otherPlayers = game.add.group();
+	
 	/* Player */
 	player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
 	player.anchor.setTo(0.39, 0.5);
@@ -366,7 +377,7 @@ function update() {
 	
 	game.physics.arcade.collide(player, layerGround); // layerSky does not have a collision.
 	player.rotation = game.physics.arcade.angleToPointer(player); // + 1.57;
-
+	
 	if (cursors.up.isDown) {
 		player.body.velocity.y = -wc.player.speedXY;
 	} else if (cursors.down.isDown) {
@@ -434,16 +445,30 @@ function update() {
 		player.frame = playerStatus.isJustGotHit ? 6 : 0;
 	}
 
-	//player.rotation = game.physics.arcade.angleToPointer(player); // + 1.57;
 	/* This makes the knoekback work. */
 	if (playerStatus.isJustGotHit) {
 		game.physics.arcade.moveToObject(player, ogre, enemyStatus.knockbackSpeed);
 	} else {
 		ogre.rotation = game.physics.arcade.moveToObject(ogre, player, enemyStatus.chaseSpeed)
 	}
-	//console.log("p.b.p.x : " + player.body.position.x);
-	//console.log(scoreboard.points.count);
 	firestoreManager.syncUiToFirestoreData(player, scoreboard.points.count);
+	//console.log("op c l :: " + otherPlayers.children.length);
+	for (var iOP = 0; iOP < otherPlayers.children.length; iOP++) {
+		var op = otherPlayers.children[iOP];
+		var oChanges = firestoreManager.changeDict[op.data.fbId];
+		if (oChanges != null) {
+			//debugger;
+			if (oChanges.hasOwnProperty("kill")) {
+				alert("kill kill kill");
+				op.destroy();
+			} else {
+				op.position = {x: oChanges.x, y: oChanges.y};
+				op.rotation = oChanges.rotation * 0.0174532;
+				console.log("op rot :: " + op.rotation);
+			}
+		}
+		//debugger;
+	}
 }
 
 var iWeaponChargePc = 0;
