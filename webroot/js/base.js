@@ -459,7 +459,6 @@ function update() {
 		if (oChanges != null) {
 			//debugger;
 			if (oChanges.hasOwnProperty("kill")) {
-				alert("kill kill kill");
 				op.destroy();
 			} else {
 				op.position = {x: oChanges.x, y: oChanges.y};

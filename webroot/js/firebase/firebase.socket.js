@@ -166,15 +166,19 @@ function onUnload() {
 	deleteUserMe();
 }
 
-function deleteUserMe() {
-	if (firestoreUserData.id == null) {
-		return;
-	}
-	db.collection("players").doc(firestoreUserData.id).delete().then(function() {
+function deleteUser(idUser) {
+	db.collection("players").doc(idUser).delete().then(function() {
 	    console.log("Document successfully deleted! " +  firestoreUserData.id);
 	}).catch(function(error) {
 	    console.error("Error removing document: ", error);
 	});
+}
+
+function deleteUserMe() {
+	if (firestoreUserData.id == null) {
+		return;
+	}
+	deleteUser(firestoreUserData.id);
 }
 
 
@@ -183,8 +187,12 @@ var socketUiTools = {
 	tableHeader: "<tr id=\"header\"><td>name"
 			+ "</td><td>score</td><td>x</td></tr>",
 	decorateUserRow: function(docId, docData) {
-		return "<tr id=\"" + docId + "\" title=\"" + docId + "\" ><td>" + docData.name 
-			+ "</td><td>" + docData.score + "</td><td>" + docData.x + "</td></tr>";
+		return "<tr id=\"" + docId + "\" title=\"" + docId + "\" >"
+			+ "<td>" + docData.name 
+			+ "</td><td>" + docData.score + "</td>"
+			+ "<td>" + docData.x + "</td>"
+			+ "<td onclick=\"deleteUser(\'" + docId + "\');\">X</td>" 
+			+ "</tr>";
 	}
 }
 

@@ -6,7 +6,7 @@ socketUiTools.decorateUserRow = function(docId, docData) {
 		+ "<td>" + docData.y + "</td>"
 		+ "<td>" + docData.rotation + "</td>"
 		+ "<td>" + docId + "</td>" 
-		+ "<td onclick=\"admin.deleteUser(\'" + docId + "\');\">X</td>" 
+		+ "<td onclick=\"deleteUser(\'" + docId + "\');\">X</td>" 
 		+ "</tr>";
 };
 
@@ -20,8 +20,4 @@ socketUiTools.tableHeader = "<tr id=\"header\"><td>name"
 	+ "</tr>";
 
 var admin = {
-	deleteUser: function(idUser) {
-		firestoreUserData.id = idUser;
-		deleteUserMe();
-	}
 }
