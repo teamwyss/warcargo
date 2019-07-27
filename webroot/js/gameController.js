@@ -2,16 +2,8 @@
 
 var gameController = {
 	startGame: function() {
-		if (this.logInPlayer()) {
-			
-			
-			setTimeout(function() {	
-				mainMenu.hide();
-				enemyStatus.chaseSpeed = enemyStatus.chaseSpeedDefault;
-			}, 1000)
-		
-		
-		}
+		mainMenu.hide();
+		enemyStatus.chaseSpeed = enemyStatus.chaseSpeedDefault;
 	},
 	pauseGame: function() {
 		this.endGame();
@@ -19,16 +11,5 @@ var gameController = {
 	endGame: function() {
 		mainMenu.show();
 		enemyStatus.chaseSpeed = 0;
-	},
-	logInPlayer: function() {
-		var playerName = util.el("#playerNameLoginField").value;
-		if (playerName == "") {
-			alert("please enter name");
-			return false;
-		}
-		if (firestoreUserData.id == null) {
-			firestoreManager.logMeIn(playerName);
-		}
-		return true;
 	}
 };
